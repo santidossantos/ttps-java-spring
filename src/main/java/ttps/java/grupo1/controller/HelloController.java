@@ -7,12 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloController {
 
-    @Autowired
-    servicio usuarioService;
 
     @GetMapping("/")
     public String helloWorld() {
-        return this.usuarioService.resolver()
+        return "hola";
     }
 
 }
