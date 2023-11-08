@@ -1,5 +1,6 @@
 package ttps.java.grupo1.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -7,8 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ttps.java.grupo1.model.User;
 import ttps.java.grupo1.service.UserService;
+import org.springframework.validation.annotation.Validated;
 
 @RestController
+@Validated
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
@@ -21,7 +24,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         System.out.println("Creando el usuario: " + user.getName());
         userService.saveUser(user);
         System.out.println("Se creo el usuario :)");

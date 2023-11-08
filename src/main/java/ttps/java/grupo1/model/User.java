@@ -1,11 +1,13 @@
 package ttps.java.grupo1.model;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import static jakarta.persistence.GenerationType.IDENTITY;
+
 
 @Entity
 @Table(name="`user`")
@@ -26,6 +28,7 @@ public class User {
     @Column(name = "password", length = 50, nullable = false)
     private String password;
 
+    @NotEmpty(message = "El mail no puede estar vacio")
     @Column(name = "email", length = 50, nullable = false, unique = true)
     private String email;
 
