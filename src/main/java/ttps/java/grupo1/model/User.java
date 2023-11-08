@@ -20,19 +20,19 @@ public class User {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "El nombre no puede estar vacio")
+    @NotEmpty
     @Column(name = "name", length = 25, nullable = false)
     private String name;
 
-    @NotEmpty(message = "El username no puede estar vacio")
+    @NotEmpty
     @Column(name = "username", length = 25, unique = true, nullable = false)
     private String username;
 
     @Column(name = "password", length = 50, nullable = false)
     private String password;
 
-    @NotEmpty(message = "El mail no puede estar vacio")
-    @Email(message = "Correo electrónico no válido")
+    @NotEmpty
+    @Email
     @Column(name = "email", length = 50, nullable = false, unique = true)
     private String email;
 
