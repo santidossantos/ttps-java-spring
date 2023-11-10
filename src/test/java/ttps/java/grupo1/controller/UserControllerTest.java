@@ -39,6 +39,16 @@ class UserControllerTest {
                         .content(userJson))
                         .andExpect(MockMvcResultMatchers.status().isCreated());
     }
+
+    @Test
+    void createUserWithoutMail() throws Exception {
+        User user = new User("Laura", "lfava", "1234", null);
+        String userJson = objectMapper.writeValueAsString(user);
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userJson))
+                        .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
 }
 
 
