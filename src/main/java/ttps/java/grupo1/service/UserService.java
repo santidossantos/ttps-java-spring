@@ -1,20 +1,22 @@
 package ttps.java.grupo1.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ttps.java.grupo1.DAO.UserDAO;
+import ttps.java.grupo1.DAO.UserRepository;
 import ttps.java.grupo1.model.User;
 
+@Service
 public class UserService {
 
     @Autowired
-    UserDAO userDAO;
+    UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public String findByEmail() {
-        return this.userDAO.findByEmail("jorge11@gmail.com").getEmail();
+        return this.userRepository.findByEmail("jorge11@gmail.com").getEmail();
     }
 
     @Transactional
-    public User saveUser(User user){ return this.userDAO.save(user); }
+    public User saveUser(User user){ return this.userRepository.save(user); }
 }

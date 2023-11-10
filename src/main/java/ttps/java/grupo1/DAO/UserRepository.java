@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import ttps.java.grupo1.model.User;
 
 @Repository
-public interface UserDAO extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByEmail(String email);
 
