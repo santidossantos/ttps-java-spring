@@ -26,12 +26,12 @@ class UserControllerTest {
 
     @Test
     void createUser() throws Exception {
-        User user = new User("Laura", "john.doe", "password123", "john@example.com");
+        User user = new User("Laura", "lfava", "1234", "lfava@gmail.com");
         String userJson = objectMapper.writeValueAsString(user);
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                        .andExpect(MockMvcResultMatchers.status().isCreated());
     }
 }
 
