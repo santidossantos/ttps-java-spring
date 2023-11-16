@@ -1,5 +1,6 @@
 package ttps.java.grupo1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
@@ -23,6 +24,7 @@ public class Group {
     @Column(nullable = false, columnDefinition="BOOLEAN DEFAULT false")
     private boolean hidden;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "user_group",
@@ -35,6 +37,7 @@ public class Group {
     @JoinColumn(name = "category_group_id", insertable = false, updatable = false)
     private GroupCategory category;
 
+    @JsonIgnore
     @OneToMany(mappedBy="group")
     private List<Expense> expenses;
 
