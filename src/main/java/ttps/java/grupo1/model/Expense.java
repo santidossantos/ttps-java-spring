@@ -26,6 +26,9 @@ public class Expense {
     private Double amount;
 
     @Column
+    private String name;
+
+    @Column
     private Date date;
 
     @Column

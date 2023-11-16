@@ -3,7 +3,7 @@ package ttps.java.grupo1.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ttps.java.grupo1.DAO.UserRepository;
+import ttps.java.grupo1.repository.UserRepository;
 import ttps.java.grupo1.model.User;
 
 @Service
