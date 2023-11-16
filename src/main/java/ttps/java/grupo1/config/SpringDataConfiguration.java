@@ -9,7 +9,7 @@ import ttps.java.grupo1.service.UserService;
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_SINGLETON;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "ttps.java.grupo1.DAO")
+@EnableJpaRepositories(basePackages = "ttps.java.grupo1.repository")
 public class SpringDataConfiguration {
 
     @Bean
