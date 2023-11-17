@@ -1,7 +1,8 @@
 package ttps.java.grupo1.model;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
@@ -14,25 +15,22 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Table(name="`user`")
 @NoArgsConstructor
 @Data
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @NotEmpty
     @Column(name = "name", length = 25, nullable = false)
     private String name;
 
-    @NotEmpty
     @Column(name = "username", length = 25, unique = true, nullable = false)
     private String username;
 
     @Column(name = "password", length = 50, nullable = false)
     private String password;
 
-    @NotEmpty
-    @Email
     @Column(name = "email", length = 50, nullable = false, unique = true)
     private String email;
 
@@ -47,6 +45,10 @@ public class User {
         this.username = username;
         this.password = password;
         this.email = email;
+    }
+
+    public void addFriend(User friend) {
+    	this.friends.add(friend);
     }
 
 }

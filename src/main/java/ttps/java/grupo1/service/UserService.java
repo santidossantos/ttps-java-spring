@@ -31,7 +31,25 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteById(Long id) {
-        this.userRepository.deleteById(id);
+    public boolean deleteById(Long id) {
+        if(this.userRepository.findById(id).isPresent()) {
+            this.userRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    @Transactional
+    public boolean addFriend(Long id, Long friendId) {
+    	if(this.userRepository.findById(id).isPresent() && this.userRepository.findById(friendId).isPresent()) {
+    		User user = this.userRepository.findById(id).get();
+    		User friend = this.userRepository.findById(friendId).get();
+    		user.addFriend(friend);
+    		friend.addFriend(user);
+    		this.userRepository.save(user);
+    		this.userRepository.save(friend);
+    		return true;
+    	}
+    	return false;
     }
 }
