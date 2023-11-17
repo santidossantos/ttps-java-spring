@@ -1,5 +1,6 @@
 package ttps.java.grupo1.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -15,7 +16,6 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Table(name="`user`")
 @NoArgsConstructor
 @Data
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User {
 
     @Id
@@ -35,9 +35,11 @@ public class User {
     private String email;
 
     @ManyToMany(mappedBy = "users")
+    @JsonBackReference
     private List<Group> groups = new ArrayList<Group>();
 
     @ManyToMany
+    @JsonBackReference(value="friends")
     private List<User> friends = new ArrayList<User>();
 
     public User(String name, String username, String password, String email) {

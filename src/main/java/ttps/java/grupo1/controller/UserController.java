@@ -77,9 +77,10 @@ public class UserController {
         return new ResponseEntity<>(status);
     }
 
-    @GetMapping("/{id}/friends/")
+    @GetMapping("/{id}/friends")
     public ResponseEntity<List<User>> getFriends(@PathVariable("id") Long id) {
         Optional<User> user = this.userService.findById(id);
+        System.out.println("------- HOLA --------");
         return user.map(value -> new ResponseEntity<>(value.getFriends(), HttpStatus.OK)).
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
