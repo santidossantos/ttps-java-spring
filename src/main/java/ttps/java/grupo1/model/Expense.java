@@ -34,20 +34,21 @@ public class Expense {
     @Column
     private String img;
 
-    @ManyToOne(cascade = PERSIST)
+    @ManyToOne
     @JoinColumn(name="group_id", nullable = false)
     private Group group;
 
-    @OneToOne(cascade = PERSIST)
+    @OneToOne
+    @JoinColumn(name="category_id")
     private ExpenseCategory category;
 
-    @OneToOne(cascade = PERSIST)
+    @OneToOne
     private User payingUser;
 
-    @OneToMany(cascade = PERSIST)
+    @OneToMany
     private List<ExpenseUsersPays> debtorsUsers;
 
-    @ManyToOne(cascade = PERSIST)
+    @ManyToOne
     private ExpenseStrategy expenseStrategy;
 
     public Expense(Double amount, Date date, String img, Group group, ExpenseCategory category, User payingUser, List<ExpenseUsersPays> debtorsUsers, ExpenseStrategy expenseStrategy) {

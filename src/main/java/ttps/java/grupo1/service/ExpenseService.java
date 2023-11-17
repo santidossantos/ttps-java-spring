@@ -35,10 +35,10 @@ public class ExpenseService {
         return expenseRepository.save(expense);
     }
 
-    @Transactional
-    public void updateAmount(Long id, Double amount){
-        expenseRepository.updateAmount(id, amount);
-    }
+//    @Transactional
+//    public void updateAmount(Long id, Double amount){
+//        expenseRepository.updateAmount(id, amount);
+//    }
 
     @Transactional
     public void deleteAll(){

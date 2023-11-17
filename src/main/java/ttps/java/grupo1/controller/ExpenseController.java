@@ -1,18 +1,33 @@
 package ttps.java.grupo1.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ttps.java.grupo1.model.Expense;
 import ttps.java.grupo1.service.ExpenseService;
+
+import java.util.List;
 
 @RestController
 @Validated
 @RequestMapping(value = "/expenses", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ExpenseController {
+
     @Autowired
     private ExpenseService expenseService;
 
+    @GetMapping("/")
+    public List<Expense> getAllExpenses() {
+        return this.expenseService.findAll();
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<Expense> createExpense(@RequestBody Expense expense){
+        System.out.println("expensa: "+expense);
+        return new ResponseEntity<Expense>(this.expenseService.saveExpense(expense), HttpStatus.CREATED);
+    }
 
 }

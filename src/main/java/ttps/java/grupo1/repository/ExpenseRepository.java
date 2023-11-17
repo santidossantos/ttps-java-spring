@@ -12,9 +12,9 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     List<Expense> getByName(String name);
 
-    @Modifying
-    @Query("update Expense exp set exp.amount = :amount where exp.id = :id")
-    void updateAmount(Long Id, Double amount);
+//    @Modifying
+//    @Query("update Expense exp set exp.amount = :amount where exp.id = :id")
+//    void updateAmount(Long Id, Double amount);
 
 
 
