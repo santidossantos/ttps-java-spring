@@ -2,12 +2,14 @@ package ttps.java.grupo1.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ttps.java.grupo1.DTO.FriendRequestDTO;
 import ttps.java.grupo1.DTO.UserDTO;
+import ttps.java.grupo1.exception.UserNotFoundException;
 import ttps.java.grupo1.model.User;
 import ttps.java.grupo1.service.UserService;
 import org.springframework.validation.annotation.Validated;
@@ -40,24 +42,36 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@Valid @RequestBody UserDTO user) {
-        return new ResponseEntity<>(this.userService.save(
-                new User(user.getName(), user.getUsername(), user.getPassword(), user.getEmail())
-        ), HttpStatus.CREATED);
+    public ResponseEntity<User> create(@Valid @RequestBody UserDTO userDTO) {
+        User user = new User(userDTO.getName(), userDTO.getUsername(), userDTO.getPassword(), userDTO.getEmail());
+        try {
+            return new ResponseEntity<User>(userService.save(user), HttpStatus.CREATED);
+        }
+        catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> update(@PathVariable("id") Long id, @Valid @RequestBody UserDTO user) {
-        Optional<User> currentUser = userService.findById(id);
-        if (currentUser.isPresent()) {
-            User updatedUser = currentUser.get();
-            updatedUser.setName(user.getName());
-            updatedUser.setUsername(user.getUsername());
-            updatedUser.setPassword(user.getPassword());
-            updatedUser.setEmail(user.getEmail());
-            return new ResponseEntity<>(this.userService.save(updatedUser), HttpStatus.OK);
+    public ResponseEntity<User> update(@PathVariable("id") Long id, @Valid @RequestBody UserDTO userDTO) {
+        User user = new User(userDTO.getName(), userDTO.getUsername(), userDTO.getPassword(), userDTO.getEmail());
+
+        try {
+            userService.updateById(id, user);
+            return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        catch (UserNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/{id}")
@@ -80,7 +94,6 @@ public class UserController {
     @GetMapping("/{id}/friends")
     public ResponseEntity<List<User>> getFriends(@PathVariable("id") Long id) {
         Optional<User> user = this.userService.findById(id);
-        System.out.println("------- HOLA --------");
         return user.map(value -> new ResponseEntity<>(value.getFriends(), HttpStatus.OK)).
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -91,4 +104,5 @@ public class UserController {
         return user.map(value -> new ResponseEntity<>(value.getFriends().get(0), HttpStatus.OK)).
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
 }
