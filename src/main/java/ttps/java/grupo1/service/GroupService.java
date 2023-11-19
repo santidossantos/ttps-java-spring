@@ -4,12 +4,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ttps.java.grupo1.DAO.GroupRepository;
+import ttps.java.grupo1.repository.GroupRepository;
 import ttps.java.grupo1.model.Group;
-import ttps.java.grupo1.model.User;
-import ttps.java.grupo1.model.Expense;
-
-import java.util.List;
 
 @Service
 public class GroupService {
