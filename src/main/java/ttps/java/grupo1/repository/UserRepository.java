@@ -1,4 +1,4 @@
-package ttps.java.grupo1.DAO;
+package ttps.java.grupo1.repository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;

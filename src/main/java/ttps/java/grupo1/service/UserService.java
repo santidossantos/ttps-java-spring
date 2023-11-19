@@ -1,10 +1,14 @@
 package ttps.java.grupo1.service;
 
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ttps.java.grupo1.DAO.UserRepository;
+import ttps.java.grupo1.repository.UserRepository;
 import ttps.java.grupo1.model.User;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -13,10 +17,12 @@ public class UserService {
     UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public String findByEmail() {
-        return this.userRepository.findByEmail("jorge11@gmail.com").getEmail();
+    public List<User> findAll() {
+        return this.userRepository.findAll();
     }
 
     @Transactional
-    public User saveUser(User user){ return this.userRepository.save(user); }
+    public User save(User user) throws DataAccessException {
+        return this.userRepository.save(user);
+    }
 }
