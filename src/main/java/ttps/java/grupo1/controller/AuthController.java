@@ -1,5 +1,6 @@
 package ttps.java.grupo1.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ttps.java.grupo1.DTO.AuthResponseDTO;
+import ttps.java.grupo1.DTO.LoginDTO;
 import ttps.java.grupo1.DTO.RegisterDTO;
 import ttps.java.grupo1.model.User;
 import ttps.java.grupo1.model.UserRole;
@@ -43,15 +45,16 @@ public class AuthController {
     private JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterDTO registerDTO) {
+    public ResponseEntity<String> register(@Valid @RequestBody RegisterDTO registerDTO) {
         if(userRepository.existsByUsername(registerDTO.getUsername())) {
             return new ResponseEntity<>("Username already exists", HttpStatus.CONFLICT);
         }
+
         User user = new User();
         user.setUsername(registerDTO.getUsername());
         user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
-        user.setEmail("testmail@gmail.com");
-        user.setName("testname");
+        user.setEmail(registerDTO.getEmail());
+        user.setName(registerDTO.getName());
 
         UserRole roles = roleRepository.findByName("USER")
                 .orElseThrow(() -> new RuntimeException("User Role not set."));
@@ -59,15 +62,15 @@ public class AuthController {
         user.setRoles(Collections.singletonList(roles));
         userRepository.save(user);
 
-        return new ResponseEntity<String>("Success register", HttpStatus.CREATED);
+        return new ResponseEntity<>("Success register", HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody RegisterDTO registerDTO) {
+    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        registerDTO.getUsername(),
-                        registerDTO.getPassword()
+                        loginDTO.getUsername(),
+                        loginDTO.getPassword()
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);

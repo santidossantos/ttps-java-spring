@@ -6,18 +6,13 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class RegisterDTO {
+
+public class LoginDTO {
 
     @NotEmpty
     private String username;
 
     @NotEmpty
     private String password;
-
-    @NotEmpty
-    private String email;
-
-    @NotEmpty
-    private String name;
 
 }
