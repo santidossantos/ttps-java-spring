@@ -42,6 +42,14 @@ public class User {
     @ManyToMany
     private List<User> friends = new ArrayList<User>();
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "user_role",
+        joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
+    private List<UserRole> roles = new ArrayList<>();
+
     public User(String name, String username, String password, String email) {
         this.name = name;
         this.username = username;
