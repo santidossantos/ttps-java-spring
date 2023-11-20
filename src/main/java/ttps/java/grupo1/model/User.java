@@ -1,19 +1,18 @@
 package ttps.java.grupo1.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 
 @Entity
-@Table(name="`user`")
 @NoArgsConstructor
 @Data
 public class User {
@@ -22,25 +21,30 @@ public class User {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(name = "name", length = 25, nullable = false)
+    @Column(length = 25, nullable = false)
     private String name;
 
-    @Column(name = "username", length = 25, unique = true, nullable = false)
+    @Column(length = 25, unique = true, nullable = false)
     private String username;
 
-    @Column(name = "password", length = 50, nullable = false)
     private String password;
 
-    @Column(name = "email", length = 50, nullable = false, unique = true)
+    @Column(length = 50, nullable = false, unique = true)
     private String email;
 
     @ManyToMany(mappedBy = "users")
-    @JsonBackReference
-    private List<Group> groups = new ArrayList<Group>();
+    private List<Group> groups = new ArrayList<>();
 
-    @ManyToMany
-    @JsonBackReference(value="friends")
-    private List<User> friends = new ArrayList<User>();
+    @ManyToMany(fetch = LAZY, cascade = ALL)
+    private List<User> friends = new ArrayList<>();
+
+    @ManyToMany(fetch = EAGER, cascade = ALL)
+    @JoinTable(
+        name = "user_role",
+        joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
+    private List<UserRole> roles = new ArrayList<>();
 
     public User(String name, String username, String password, String email) {
         this.name = name;

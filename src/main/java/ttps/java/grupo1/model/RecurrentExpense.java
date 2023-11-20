@@ -13,7 +13,6 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "`recurrent_expense`")
 @NoArgsConstructor
 @Data
 public class RecurrentExpense extends Expense{
