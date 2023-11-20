@@ -1,17 +1,18 @@
 package ttps.java.grupo1.model;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 
 @Entity
-@Table(name="`user`")
 @NoArgsConstructor
 @Data
 public class User {
@@ -32,12 +33,12 @@ public class User {
     private String email;
 
     @ManyToMany(mappedBy = "users")
-    private List<Group> groups = new ArrayList<Group>();
+    private List<Group> groups = new ArrayList<>();
 
-    @ManyToMany
-    private List<User> friends = new ArrayList<User>();
+    @ManyToMany(fetch = LAZY, cascade = ALL)
+    private List<User> friends = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = EAGER, cascade = ALL)
     @JoinTable(
         name = "user_role",
         joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
