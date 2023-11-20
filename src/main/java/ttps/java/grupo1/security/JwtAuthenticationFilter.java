@@ -42,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
               List<String> userRoles = userDetails.getAuthorities()
                       .stream().map(GrantedAuthority::getAuthority).toList();
 
-              if(userRoles.contains("user")) {
+              if(userRoles.contains("USER")) {
                   UsernamePasswordAuthenticationToken authentication =
                           new UsernamePasswordAuthenticationToken(
                                   userDetails, null, userDetails.getAuthorities()
