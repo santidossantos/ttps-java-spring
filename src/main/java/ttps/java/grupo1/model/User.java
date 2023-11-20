@@ -20,20 +20,15 @@ public class User {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @NotEmpty
-    @Column(name = "name", length = 25, nullable = false)
+    @Column(length = 25, nullable = false)
     private String name;
 
-    @NotEmpty
-    @Column(name = "username", length = 25, unique = true, nullable = false)
+    @Column(length = 25, unique = true, nullable = false)
     private String username;
 
-    @Column(name = "password", length = 50, nullable = false)
     private String password;
 
-    @NotEmpty
-    @Email
-    @Column(name = "email", length = 50, nullable = false, unique = true)
+    @Column(length = 50, nullable = false, unique = true)
     private String email;
 
     @ManyToMany(mappedBy = "users")

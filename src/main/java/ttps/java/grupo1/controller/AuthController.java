@@ -5,11 +5,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ttps.java.grupo1.DTO.AuthResponseDTO;
 import ttps.java.grupo1.DTO.RegisterDTO;
 import ttps.java.grupo1.model.User;
 import ttps.java.grupo1.model.UserRole;
@@ -46,6 +50,8 @@ public class AuthController {
         User user = new User();
         user.setUsername(registerDTO.getUsername());
         user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
+        user.setEmail("testmail@gmail.com");
+        user.setName("testname");
 
         UserRole roles = roleRepository.findByName("USER")
                 .orElseThrow(() -> new RuntimeException("User Role not set."));
@@ -54,6 +60,20 @@ public class AuthController {
         userRepository.save(user);
 
         return new ResponseEntity<String>("Success register", HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody RegisterDTO registerDTO) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        registerDTO.getUsername(),
+                        registerDTO.getPassword()
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtTokenProvider.generateToken(authentication);
+
+        return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
     }
 
 }
