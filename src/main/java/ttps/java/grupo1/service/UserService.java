@@ -104,6 +104,7 @@ public class UserService {
         else {
             UserRole role = new UserRole();
             role.setName("USER");
+            roleRepository.save(role);
             user.setRoles(Collections.singletonList(role));
         }
 
