@@ -41,19 +41,6 @@ public class UserController {
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping
-    public ResponseEntity<User> create(@Valid @RequestBody UserDTO userDTO) {
-        User user = new User(userDTO.getName(), userDTO.getUsername(), userDTO.getPassword(), userDTO.getEmail());
-        try {
-            return new ResponseEntity<User>(userService.save(user), HttpStatus.CREATED);
-        }
-        catch (DataIntegrityViolationException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-        catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<User> update(@PathVariable("id") Long id, @Valid @RequestBody UserDTO userDTO) {
@@ -61,7 +48,7 @@ public class UserController {
 
         try {
             userService.updateById(id, user);
-            return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         catch (UserNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

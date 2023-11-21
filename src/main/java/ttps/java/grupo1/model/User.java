@@ -1,12 +1,14 @@
 package ttps.java.grupo1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -27,18 +29,26 @@ public class User {
     @Column(length = 25, unique = true, nullable = false)
     private String username;
 
+    @JsonIgnore
     private String password;
 
     @Column(length = 50, nullable = false, unique = true)
     private String email;
 
     @ManyToMany(mappedBy = "users")
+    @JsonManagedReference
     private List<Group> groups = new ArrayList<>();
 
     @ManyToMany(fetch = LAZY, cascade = ALL)
+    @JsonIgnore
     private List<User> friends = new ArrayList<>();
 
-    @ManyToMany(fetch = EAGER, cascade = ALL)
+    @OneToMany(fetch = LAZY, cascade = ALL)
+    @JsonIgnore
+    private List<User> friendsRequests = new ArrayList<>();
+
+
+    @ManyToMany(fetch = EAGER, cascade = DETACH)
     @JoinTable(
         name = "user_role",
         joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
