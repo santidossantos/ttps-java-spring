@@ -39,4 +39,8 @@ public class GroupService {
                 .orElseThrow(EntityNotFoundException::new);
         return group;
     }
+
+    public Group save(Group group) {
+        return this.groupRepository.save(group);
+    }
 }

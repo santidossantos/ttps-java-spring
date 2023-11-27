@@ -2,6 +2,7 @@ package ttps.java.grupo1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
@@ -36,7 +37,6 @@ public class Group {
     private List<User> users = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "category_group_id", insertable = false, updatable = false)
     private GroupCategory category;
 
     @JsonIgnore

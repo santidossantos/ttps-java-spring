@@ -30,6 +30,13 @@ public class GroupController {
         return new ResponseEntity<>(group, HttpStatus.OK);
     }
 
+    @PostMapping
+    public ResponseEntity<Group> createGroup(@Valid @RequestBody Group group) {
+        System.out.println("creando grupo: " + group.getName());
+        Group newGroup = groupService.save(group);
+        return new ResponseEntity<>(newGroup, HttpStatus.CREATED);
+    }
+
 
 
 
