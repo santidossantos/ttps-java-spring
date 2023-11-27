@@ -1,6 +1,7 @@
 package ttps.java.grupo1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
@@ -31,7 +32,8 @@ public class Group {
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<User> users = new ArrayList<User>();
+    @JsonBackReference
+    private List<User> users = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "category_group_id", insertable = false, updatable = false)
