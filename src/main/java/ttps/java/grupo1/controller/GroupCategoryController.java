@@ -15,7 +15,7 @@ import ttps.java.grupo1.service.GroupCategoryService;
 
 @RestController
 @Validated
-@RequestMapping(value = "/group_categorys", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/groupCategorys", produces = MediaType.APPLICATION_JSON_VALUE)
 public class GroupCategoryController {
 
     @Autowired

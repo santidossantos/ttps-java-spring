@@ -28,10 +28,9 @@ public class GroupSeeds {
     public void seed() {
         System.out.println("Initializing seed groups...");
         try {
-            GroupCategory groupCategory = groupCategoryRepository.findFirstByOrderById();
-            Group group1 = new Group("Viaje a brasil", false, null, groupCategory);
-            Group group2 = new Group("Viaje a china", false, null, groupCategory);
-            Group group3 = new Group("Viaje a japon", false, null, groupCategory);
+            Group group1 = new Group("Viaje a brasil", false, null, null);
+            Group group2 = new Group("Viaje a china", false, null, null);
+            Group group3 = new Group("Viaje a japon", false, null, null);
             ResponseEntity<Group> response1 = groupController.createGroup(group1);
             ResponseEntity<Group> response2 = groupController.createGroup(group2);
             ResponseEntity<Group> response3 = groupController.createGroup(group3);

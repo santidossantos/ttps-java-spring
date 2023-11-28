@@ -62,4 +62,5 @@ public class GroupService {
     public Iterable<Group> findAll() {
         return this.groupRepository.findAll();
     }
+
 }

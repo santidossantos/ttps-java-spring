@@ -30,11 +30,9 @@ public class Group {
     private boolean hidden;
 
     @ManyToMany
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<User> users = new ArrayList<>();
 
     @ManyToOne
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private GroupCategory category;
 
     @OneToMany(mappedBy = "group")
