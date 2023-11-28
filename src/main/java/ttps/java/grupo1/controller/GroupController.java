@@ -23,6 +23,12 @@ public class GroupController {
     @Autowired
     private GroupService groupService;
 
+    @GetMapping()
+    public ResponseEntity<Iterable<Group>> getGroups() {
+        Iterable<Group> groups = groupService.findAll();
+        return new ResponseEntity<>(groups, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Group> getGroup(@PathVariable("id") Long id) {
         System.out.println("obteniendo el grupo con id: " + id);

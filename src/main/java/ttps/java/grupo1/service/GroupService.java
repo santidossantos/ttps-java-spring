@@ -31,7 +31,9 @@ public class GroupService {
         return this.groupRepository.save(group);
     }
 
-    public void update(Group currentGroup) {this.groupRepository.save(currentGroup);}
+    public void update(Group currentGroup) {
+        this.groupRepository.save(currentGroup);
+    }
 
     public boolean deleteById(Long id) {
         if (this.groupRepository.existsById(id)) {
@@ -42,7 +44,7 @@ public class GroupService {
     }
 
     public Optional<Group> addMember(Long groupId, Long userId) {
-        if(this.groupRepository.findById(groupId).isPresent() && this.userRepository.findById(userId).isPresent()) {
+        if (this.groupRepository.findById(groupId).isPresent() && this.userRepository.findById(userId).isPresent()) {
             Group group = this.groupRepository.findById(groupId).get();
             User user = this.userRepository.findById(userId).get();
             group.addMember(user);
@@ -53,4 +55,7 @@ public class GroupService {
     }
 
 
+    public Iterable<Group> findAll() {
+        return this.groupRepository.findAll();
+    }
 }
