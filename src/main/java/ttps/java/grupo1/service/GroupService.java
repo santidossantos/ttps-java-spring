@@ -27,14 +27,17 @@ public class GroupService {
         return group;
     }
 
+    @Transactional
     public Group save(Group group) {
         return this.groupRepository.save(group);
     }
 
+    @Transactional
     public void update(Group currentGroup) {
         this.groupRepository.save(currentGroup);
     }
 
+    @Transactional
     public boolean deleteById(Long id) {
         if (this.groupRepository.existsById(id)) {
             this.groupRepository.deleteById(id);
@@ -43,6 +46,7 @@ public class GroupService {
         return false;
     }
 
+    @Transactional
     public Optional<Group> addMember(Long groupId, Long userId) {
         if (this.groupRepository.findById(groupId).isPresent() && this.userRepository.findById(userId).isPresent()) {
             Group group = this.groupRepository.findById(groupId).get();
@@ -54,7 +58,7 @@ public class GroupService {
         return Optional.empty();
     }
 
-
+    @Transactional
     public Iterable<Group> findAll() {
         return this.groupRepository.findAll();
     }

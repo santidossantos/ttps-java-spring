@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,18 +30,22 @@ public class Group {
     private boolean hidden;
 
     @ManyToMany
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<User> users = new ArrayList<>();
 
     @ManyToOne
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private GroupCategory category;
-    
+
     @OneToMany(mappedBy = "group")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Expense> expenses;
 
-    public Group(String name, boolean hidden, List<User> users) {
+    public Group(String name, boolean hidden, List<User> users, GroupCategory category) {
         this.name = name;
         this.hidden = hidden;
         this.users = users;
+        this.category = category;
     }
 
     public void addMember(User user) {
