@@ -33,8 +33,7 @@ public class Group {
 
     @ManyToOne
     private GroupCategory category;
-
-    @JsonIgnore
+    
     @OneToMany(mappedBy = "group")
     private List<Expense> expenses;
 
