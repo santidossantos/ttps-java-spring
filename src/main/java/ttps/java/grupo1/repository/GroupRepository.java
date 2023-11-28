@@ -8,5 +8,4 @@ import ttps.java.grupo1.model.Group;
 public interface GroupRepository extends JpaRepository<Group, Long> {
 
 
-
 }
