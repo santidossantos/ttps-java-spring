@@ -38,7 +38,6 @@ public class Expense {
 
     @ManyToOne
     @JoinColumn(name="group_id", nullable = false)
-    @JsonManagedReference
     private Group group;
 
     @OneToOne
