@@ -1,5 +1,6 @@
 package ttps.java.grupo1.controller;
 
+import exception.DataNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,7 +30,7 @@ public class ExpenseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Expense> get(@PathVariable("id") Long id){
+    public ResponseEntity<Expense> getExpenseById(@PathVariable("id") Long id){
         Optional<Expense> expense = expenseService.findById(id);
         return expense.isPresent()
                 ? new ResponseEntity<>(expense.get(), HttpStatus.OK)
@@ -40,5 +41,20 @@ public class ExpenseController {
     public ResponseEntity<Expense> createExpense(@RequestBody Expense expense){
         return new ResponseEntity<Expense>(this.expenseService.saveExpense(expense), HttpStatus.CREATED);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Expense> updateExpense(@PathVariable("id") Long id, @RequestBody Expense dataForUpdate) {
+        try{
+            expenseService.updateExpense(id, dataForUpdate);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }catch(DataNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+//    @GetMapping("/group/{id}")
+//    public ResponseEntity<Expense> getExpenseOfGroup(@PathVariable("id") Long id){
+//
+//    }
 
 }

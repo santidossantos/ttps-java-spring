@@ -32,7 +32,7 @@ public class ExpenseService {
     }
 
     @Transactional
-    public boolean updateById(Long id, Expense expenseToUpdate) throws DataNotFoundException {
+    public void updateExpense(Long id, Expense expenseToUpdate) throws DataNotFoundException {
         Optional<Expense> optionalExpense = expenseRepository.findById(id);
         Expense expense = optionalExpense.orElseThrow(() -> new DataNotFoundException("Expense not found"));
         expense.setAmount(expenseToUpdate.getAmount());
@@ -43,7 +43,6 @@ public class ExpenseService {
         expense.setExpenseStrategy(expenseToUpdate.getExpenseStrategy());
         expense.setDebtorsUsers(expenseToUpdate.getDebtorsUsers());
         expense.setPayingUser(expenseToUpdate.getPayingUser());
-        return true;
     }
 
 
