@@ -40,10 +40,10 @@ public class Expense {
     @JoinColumn(name="group_id", nullable = false)
     private Group group;
 
-    @OneToOne
+    @ManyToOne
     private ExpenseCategory category;
 
-    @OneToOne
+    @ManyToOne
     private User payingUser;
 
     @OneToMany
