@@ -10,6 +10,7 @@ import ttps.java.grupo1.model.Expense;
 import ttps.java.grupo1.service.ExpenseService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Validated
@@ -27,9 +28,16 @@ public class ExpenseController {
                 : new ResponseEntity<>(expenses, HttpStatus.OK);
     }
 
-    @PostMapping("/create")
+    @GetMapping("/{id}")
+    public ResponseEntity<Expense> get(@PathVariable("id") Long id){
+        Optional<Expense> expense = expenseService.findById(id);
+        return expense.isPresent()
+                ? new ResponseEntity<>(expense.get(), HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/")
     public ResponseEntity<Expense> createExpense(@RequestBody Expense expense){
-        System.out.println("expensa: "+expense);
         return new ResponseEntity<Expense>(this.expenseService.saveExpense(expense), HttpStatus.CREATED);
     }
 

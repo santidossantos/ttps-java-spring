@@ -1,5 +1,6 @@
 package ttps.java.grupo1.service;
 
+import exception.DataNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +22,6 @@ public class ExpenseService {
     }
 
     @Transactional(readOnly = true)
-    public List<Expense> findByName(String name){
-        return expenseRepository.getByName(name);
-    }
-
-    @Transactional(readOnly = true)
     public List<Expense> findAll(){
         return expenseRepository.findAll();
     }
@@ -35,19 +31,21 @@ public class ExpenseService {
         return expenseRepository.save(expense);
     }
 
-//    @Transactional
-//    public void updateAmount(Long id, Double amount){
-//        expenseRepository.updateAmount(id, amount);
-//    }
-
     @Transactional
-    public void deleteAll(){
-        expenseRepository.deleteAll();
+    public boolean updateById(Long id, Expense expenseToUpdate) throws DataNotFoundException {
+        Optional<Expense> optionalExpense = expenseRepository.findById(id);
+        Expense expense = optionalExpense.orElseThrow(() -> new DataNotFoundException("Expense not found"));
+        expense.setAmount(expenseToUpdate.getAmount());
+        expense.setName(expenseToUpdate.getName());
+        expense.setDate(expenseToUpdate.getDate());
+        expense.setImg(expenseToUpdate.getImg());
+        expense.setCategory(expenseToUpdate.getCategory());
+        expense.setExpenseStrategy(expenseToUpdate.getExpenseStrategy());
+        expense.setDebtorsUsers(expenseToUpdate.getDebtorsUsers());
+        expense.setPayingUser(expenseToUpdate.getPayingUser());
+        return true;
     }
 
-//    public void updateName(Long id, String name){
-//        expenseRepository.updateName(id, name);
-//    }
 
 
 
