@@ -39,7 +39,6 @@ public class Expense {
     private Group group;
 
     @OneToOne
-    @JoinColumn(name="category_id")
     private ExpenseCategory category;
 
     @OneToOne
