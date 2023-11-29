@@ -1,6 +1,6 @@
 package ttps.java.grupo1.service;
 
-import exception.DataNotFoundException;
+import ttps.java.grupo1.exception.DataNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
