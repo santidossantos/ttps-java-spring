@@ -1,5 +1,6 @@
 package ttps.java.grupo1.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
@@ -36,6 +37,7 @@ public class Group {
     private GroupCategory category;
 
     @OneToMany(mappedBy="group")
+    @JsonBackReference
     private List<Expense> expenses;
 
     public Group(String name, boolean hidden, List<User> users) {

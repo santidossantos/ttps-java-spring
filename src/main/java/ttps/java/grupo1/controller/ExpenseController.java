@@ -20,8 +20,11 @@ public class ExpenseController {
     private ExpenseService expenseService;
 
     @GetMapping("/")
-    public List<Expense> getAllExpenses() {
-        return this.expenseService.findAll();
+    public ResponseEntity<List<Expense>> getAllExpenses(){
+        List<Expense> expenses = expenseService.findAll();
+        return expenses.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(expenses, HttpStatus.OK);
     }
 
     @PostMapping("/create")

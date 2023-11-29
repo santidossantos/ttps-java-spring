@@ -15,7 +15,7 @@ public class ExpenseCategory {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long Id;
+    private Long id;
 
     @Column
     private String name;

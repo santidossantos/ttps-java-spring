@@ -1,5 +1,7 @@
 package ttps.java.grupo1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,6 +38,7 @@ public class Expense {
 
     @ManyToOne
     @JoinColumn(name="group_id", nullable = false)
+    @JsonManagedReference
     private Group group;
 
     @OneToOne
