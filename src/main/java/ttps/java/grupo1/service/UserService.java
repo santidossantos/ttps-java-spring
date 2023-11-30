@@ -14,7 +14,6 @@ import ttps.java.grupo1.model.UserRole;
 import ttps.java.grupo1.repository.RoleRepository;
 import ttps.java.grupo1.repository.UserRepository;
 import ttps.java.grupo1.model.User;
-import ttps.java.grupo1.security.JwtTokenProvider;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,14 +28,7 @@ public class UserService {
     @Autowired
     RoleRepository roleRepository;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public List<User> findAll() {
@@ -87,40 +79,40 @@ public class UserService {
     	return false;
     }
 
-    @Transactional
-    public User register(User user) throws DuplicateConstraintException {
-        if(userRepository.existsByUsername(user.getUsername())) {
-            throw new DuplicateConstraintException("Username already exists");
-        }
-        if(userRepository.existsByEmail(user.getEmail())) {
-            throw new DuplicateConstraintException("Email already exists");
-        }
-
-        Optional<UserRole> roles = roleRepository.findByName("USER");
-
-        if(roles.isPresent()) {
-        	user.setRoles(Collections.singletonList(roles.get()));
-        }
-        else {
-            UserRole role = new UserRole();
-            role.setName("USER");
-            roleRepository.save(role);
-            user.setRoles(Collections.singletonList(role));
-        }
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
-    }
-
-    public String authenticate(String username, String password) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        username,
-                        password
-                )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return jwtTokenProvider.generateToken(authentication);
-    }
+//    @Transactional
+//    public User register(User user) throws DuplicateConstraintException {
+//        if(userRepository.existsByUsername(user.getUsername())) {
+//            throw new DuplicateConstraintException("Username already exists");
+//        }
+//        if(userRepository.existsByEmail(user.getEmail())) {
+//            throw new DuplicateConstraintException("Email already exists");
+//        }
+//
+//        Optional<UserRole> roles = roleRepository.findByName("USER");
+//
+//        if(roles.isPresent()) {
+//        	user.setRoles(Collections.singletonList(roles.get()));
+//        }
+//        else {
+//            UserRole role = new UserRole();
+//            role.setName("USER");
+//            roleRepository.save(role);
+//            user.setRoles(Collections.singletonList(role));
+//        }
+//
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        return userRepository.save(user);
+//    }
+//
+//    public String authenticate(String username, String password) {
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                        username,
+//                        password
+//                )
+//        );
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//        return jwtTokenProvider.generateToken(authentication);
+//    }
 
 }

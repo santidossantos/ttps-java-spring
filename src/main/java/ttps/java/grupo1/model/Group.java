@@ -1,11 +1,16 @@
 package ttps.java.grupo1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -21,29 +26,28 @@ public class Group {
     @Column(length = 50)
     private String name;
 
-    @Column(nullable = false, columnDefinition="BOOLEAN DEFAULT false")
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private boolean hidden;
 
     @ManyToMany
-    @JoinTable(
-            name = "user_group",
-            joinColumns = @JoinColumn(name = "group_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    @JsonBackReference
     private List<User> users = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "category_group_id", insertable = false, updatable = false)
     private GroupCategory category;
 
-    @OneToMany(mappedBy="group")
+    @OneToMany(mappedBy = "group")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Expense> expenses;
 
-    public Group(String name, boolean hidden, List<User> users) {
+    public Group(String name, boolean hidden, List<User> users, GroupCategory category) {
         this.name = name;
         this.hidden = hidden;
         this.users = users;
+        this.category = category;
+    }
+
+    public void addMember(User user) {
+        this.users.add(user);
     }
 
 }

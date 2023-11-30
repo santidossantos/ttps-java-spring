@@ -36,7 +36,7 @@ public class User {
     private String email;
 
     @ManyToMany(mappedBy = "users")
-    @JsonManagedReference
+    @JsonIgnore
     private List<Group> groups = new ArrayList<>();
 
     @ManyToMany(fetch = LAZY, cascade = ALL)
