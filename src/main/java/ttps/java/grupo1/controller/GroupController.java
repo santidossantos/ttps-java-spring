@@ -12,6 +12,8 @@ import ttps.java.grupo1.apidoc.GroupApi;
 import ttps.java.grupo1.model.Group;
 import ttps.java.grupo1.service.GroupService;
 
+import java.util.Optional;
+
 @RestController
 @Validated
 @RequestMapping(value = "/groups", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,13 +30,9 @@ public class GroupController implements GroupApi {
 
     @GetMapping("/{id}")
     public ResponseEntity<Group> getGroup(@PathVariable("id") Long id) {
-        System.out.println("obteniendo el grupo con id: " + id);
-        Group group = groupService.findById(id);
-        if (group == null) {
-            System.out.println("Grupo con id: " + id + " no encontrado");
-            return new ResponseEntity<Group>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(group, HttpStatus.OK);
+        Optional<Group> optionalGroup = groupService.findById(id);
+        return optionalGroup.map(group -> new ResponseEntity<>(group, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
@@ -47,7 +45,7 @@ public class GroupController implements GroupApi {
     @PutMapping("/{id}")
     public ResponseEntity<Group> updateGroup(@PathVariable("id") Long id, @Valid @RequestBody Group group) {
         System.out.println("actualizando grupo con id: " + id);
-        Group currentGroup = groupService.findById(id);
+        Group currentGroup = groupService.findById(id).orElse(null);
         if (currentGroup == null) {
             System.out.println("Grupo con id: " + id + " no encontrado");
             return new ResponseEntity<Group>(HttpStatus.NOT_FOUND);

@@ -21,11 +21,7 @@ public class GroupService {
     UserRepository userRepository;
 
     @Transactional
-    public Group findById(Long groupId) {
-        Group group = this.groupRepository.findById(groupId)
-                .orElseThrow(EntityNotFoundException::new);
-        return group;
-    }
+    public Optional<Group> findById(Long groupId) { return groupRepository.findById(groupId); }
 
     @Transactional
     public Group save(Group group) {
