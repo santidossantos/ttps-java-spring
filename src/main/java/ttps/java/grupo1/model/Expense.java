@@ -1,5 +1,6 @@
 package ttps.java.grupo1.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -38,6 +39,7 @@ public class Expense {
 
     @ManyToOne
     @JoinColumn(name="group_id", nullable = false)
+    @JsonBackReference
     private Group group;
 
     @ManyToOne

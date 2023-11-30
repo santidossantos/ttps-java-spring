@@ -12,7 +12,7 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_SING
 
 @Configuration
 @EnableJpaRepositories(basePackages = "ttps.java.grupo1.repository")
-public class SpringDataConfiguration {
+public class SpringDataConfig {
 
     @Bean
     @Scope(scopeName = SCOPE_SINGLETON)
