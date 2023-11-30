@@ -23,25 +23,25 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerDTO) {
-        User user = new User(registerDTO.getName(), registerDTO.getUsername(),
-                registerDTO.getPassword(), registerDTO.getEmail()
-        );
-
-        try {
-            user = userService.register(user);
-        }
-        catch (DuplicateConstraintException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-        }
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
-        String token = userService.authenticate(loginDTO.getUsername(), loginDTO.getPassword());
-        return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerDTO) {
+//        User user = new User(registerDTO.getName(), registerDTO.getUsername(),
+//                registerDTO.getPassword(), registerDTO.getEmail()
+//        );
+//
+//        try {
+//            user = userService.register(user);
+//        }
+//        catch (DuplicateConstraintException e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+//        }
+//        return new ResponseEntity<>(user, HttpStatus.CREATED);
+//    }
+//
+//    @PostMapping("/login")
+//    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
+//        String token = userService.authenticate(loginDTO.getUsername(), loginDTO.getPassword());
+//        return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
+//    }
 
 }
