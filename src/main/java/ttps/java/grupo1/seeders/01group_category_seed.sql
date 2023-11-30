@@ -1,7 +1,7 @@
 SET FOREIGN_KEY_CHECKS=0;
 DELETE FROM `category_group`;
+ALTER TABLE `category_group` AUTO_INCREMENT = 0;
 
--- Creamos las categorías de grupo
 INSERT INTO `category_group` (`icon`, `name`)
 VALUES ('familia.png', 'Familia');
 

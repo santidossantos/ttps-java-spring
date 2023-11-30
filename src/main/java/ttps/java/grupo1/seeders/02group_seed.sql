@@ -1,7 +1,7 @@
 SET FOREIGN_KEY_CHECKS=0;
 DELETE FROM `group`;
+ALTER TABLE `group` AUTO_INCREMENT = 0;
 
--- Creamos los grupos
 INSERT INTO `group` (`name`, `hidden`, `category_id`)
 VALUES ('Viaje a brasil', false, 2);
 
