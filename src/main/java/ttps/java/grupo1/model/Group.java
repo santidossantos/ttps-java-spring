@@ -2,6 +2,7 @@ package ttps.java.grupo1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
@@ -37,6 +38,7 @@ public class Group {
 
     @OneToMany(mappedBy = "group")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @Schema(hidden = true)
     private List<Expense> expenses;
 
     public Group(String name, boolean hidden, List<User> users, GroupCategory category) {

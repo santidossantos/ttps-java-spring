@@ -1,6 +1,5 @@
 package ttps.java.grupo1.controller;
 
-import jakarta.validation.Path;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,16 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ttps.java.grupo1.DTO.AddMemberDTO;
+import ttps.java.grupo1.apidoc.GroupApi;
 import ttps.java.grupo1.model.Group;
-import ttps.java.grupo1.model.User;
 import ttps.java.grupo1.service.GroupService;
-
-import java.util.Optional;
 
 @RestController
 @Validated
 @RequestMapping(value = "/groups", produces = MediaType.APPLICATION_JSON_VALUE)
-public class GroupController {
+public class GroupController implements GroupApi {
 
     @Autowired
     private GroupService groupService;
