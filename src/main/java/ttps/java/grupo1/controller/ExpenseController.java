@@ -43,7 +43,7 @@ public class ExpenseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Expense> updateExpense(@PathVariable("id") Long id, @RequestBody Expense dataForUpdate) {
+    public ResponseEntity<Expense> updateExpenseById(@PathVariable("id") Long id, @RequestBody Expense dataForUpdate) {
         try{
             expenseService.updateExpense(id, dataForUpdate);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -52,9 +52,10 @@ public class ExpenseController {
         }
     }
 
-//    @GetMapping("/group/{id}")
-//    public ResponseEntity<Expense> getExpenseOfGroup(@PathVariable("id") Long id){
-//
-//    }
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Expense> deleteExpenseById(@PathVariable("id") Long id){
+        return this.expenseService.deleteById(id)
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }

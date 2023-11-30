@@ -45,6 +45,14 @@ public class ExpenseService {
         expense.setPayingUser(expenseToUpdate.getPayingUser());
     }
 
+    @Transactional
+    public boolean deleteById(Long id) {
+        if (this.expenseRepository.existsById(id)) {
+            this.expenseRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 
 
 
