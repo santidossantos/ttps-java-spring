@@ -1,5 +1,7 @@
 package ttps.java.grupo1.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,7 +21,9 @@ import java.util.Optional;
 
 @RestController
 @Validated
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+
 public class UserController {
 
     @Autowired

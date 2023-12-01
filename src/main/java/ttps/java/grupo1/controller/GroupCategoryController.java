@@ -1,5 +1,6 @@
 package ttps.java.grupo1.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import ttps.java.grupo1.service.GroupCategoryService;
 @RestController
 @Validated
 @RequestMapping(value = "/groupCategorys", produces = MediaType.APPLICATION_JSON_VALUE)
+
 public class GroupCategoryController implements GroupCategoryApi {
 
     @Autowired
