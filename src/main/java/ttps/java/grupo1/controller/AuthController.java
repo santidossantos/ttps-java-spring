@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import ttps.java.grupo1.DTO.AuthResponseDTO;
 import ttps.java.grupo1.DTO.LoginDTO;
 import ttps.java.grupo1.DTO.RegisterDTO;
-import ttps.java.grupo1.DTO.UserDTO;
 import ttps.java.grupo1.exception.DuplicateConstraintException;
 import ttps.java.grupo1.model.User;
 import ttps.java.grupo1.service.UserService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -26,21 +28,18 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginDTO loginRequest) {
+    public ResponseEntity<Object> login(@Valid @RequestBody LoginDTO loginRequest) {
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
         String token = this.userService.authenticate(username, password);
 
-        AuthResponseDTO response = new AuthResponseDTO();
-
         if(token != null) {
-            response.setToken(token);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
         }
-        else {
-            response.setMessage("Nombre de usuario o contraseña incorrecta");
-            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-        }
+
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("message", "Nombre de usuario o contraseña incorrectos");
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("/register")
@@ -59,7 +58,6 @@ public class AuthController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
         catch (Exception e) {
-            System.out.println(e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

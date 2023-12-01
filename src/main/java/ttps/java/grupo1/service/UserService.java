@@ -94,14 +94,10 @@ public class UserService {
    @Transactional(readOnly = true)
     public String authenticate(String username, String password) {
             Optional<User> user = userRepository.findByUsername(username);
-            if(user.isPresent() &&
-                    BCrypt.checkpw(password, BCrypt.hashpw(password, BCrypt.gensalt()))) {
-
+            if(user.isPresent() && BCrypt.checkpw(password, user.get().getPassword())) {
                 return jwtService.generateToken(username);
             }
-            else {
-                return null;
-            }
+            return null;
     }
 
 }
