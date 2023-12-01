@@ -3,6 +3,7 @@ package ttps.java.grupo1.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ttps.java.grupo1.exception.DuplicateConstraintException;
 import ttps.java.grupo1.exception.UserNotFoundException;
 import ttps.java.grupo1.repository.RoleRepository;
 import ttps.java.grupo1.repository.UserRepository;
@@ -69,40 +70,28 @@ public class UserService {
     	return false;
     }
 
-//    @Transactional
-//    public User register(User user) throws DuplicateConstraintException {
-//        if(userRepository.existsByUsername(user.getUsername())) {
-//            throw new DuplicateConstraintException("Username already exists");
-//        }
-//        if(userRepository.existsByEmail(user.getEmail())) {
-//            throw new DuplicateConstraintException("Email already exists");
-//        }
-//
-//        Optional<UserRole> roles = roleRepository.findByName("USER");
-//
-//        if(roles.isPresent()) {
-//        	user.setRoles(Collections.singletonList(roles.get()));
-//        }
-//        else {
-//            UserRole role = new UserRole();
-//            role.setName("USER");
-//            roleRepository.save(role);
-//            user.setRoles(Collections.singletonList(role));
-//        }
-//
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        return userRepository.save(user);
-//    }
-//
-//    public String authenticate(String username, String password) {
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        username,
-//                        password
-//                )
-//        );
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//        return jwtTokenProvider.generateToken(authentication);
-//    }
+    @Transactional
+    public User register(User user) throws DuplicateConstraintException {
+        if(userRepository.existsByUsername(user.getUsername())) {
+            throw new DuplicateConstraintException("Username already exists");
+       }
+        if(userRepository.existsByEmail(user.getEmail())) {
+            throw new DuplicateConstraintException("Email already exists");
+        }
+
+       user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+   }
+
+    public String authenticate(String username, String password) {
+        Authentication authentication = authenticationManager.authenticate(
+               new UsernamePasswordAuthenticationToken(
+                       username,
+                        password
+                )
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return jwtTokenProvider.generateToken(authentication);
+    }
 
 }

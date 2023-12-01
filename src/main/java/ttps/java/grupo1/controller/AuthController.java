@@ -26,7 +26,6 @@ public class AuthController {
         String username = "juan_perez"; // Reemplaza esto por el nombre de usuario del usuario autenticado
 
         String token = jwtService.generateToken(username);
-        System.out.println("Token generado: " + token);
         return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
 
     }

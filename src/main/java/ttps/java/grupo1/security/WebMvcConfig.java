@@ -13,8 +13,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // Agrega el interceptor y especifica las rutas que deben ser interceptadas
+        // Especifica las rutas que deben ser interceptadas
         registry.addInterceptor(jwtInterceptor)
-                .addPathPatterns("/users/**"); // Cambia "/api/**" por el patrón que desees proteger
+                .addPathPatterns("/users/**")
+                .addPathPatterns("/groups/**");
     }
 }
