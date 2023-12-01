@@ -1,5 +1,6 @@
 package ttps.java.grupo1.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 @RestController
 @Validated
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping(value = "/groups", produces = MediaType.APPLICATION_JSON_VALUE)
 public class GroupController implements GroupApi {
 
@@ -40,7 +42,6 @@ public class GroupController implements GroupApi {
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(groupList, HttpStatus.OK);
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<Group> get(@Valid @PathVariable("id") Long id) {
@@ -69,7 +70,6 @@ public class GroupController implements GroupApi {
         return new ResponseEntity<>(newGroup, HttpStatus.CREATED);
     }
 
-
     @PutMapping("/{id}")
     public ResponseEntity<Group> update(@Valid @PathVariable Long id, @RequestBody Group updatedGroup) {
         Optional<Group> existingGroupOptional = groupService.findById(id);
@@ -89,7 +89,6 @@ public class GroupController implements GroupApi {
         return new ResponseEntity<>(updatedGroupResult, HttpStatus.OK);
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Group> delete(@Valid @PathVariable("id") Long id) {
         return this.groupService.deleteById(id)
@@ -107,7 +106,6 @@ public class GroupController implements GroupApi {
                 .orElse(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(status);
     }
-
 
 }
 

@@ -1,5 +1,6 @@
 package ttps.java.grupo1.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import ttps.java.grupo1.exception.DataNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @RestController
 @Validated
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping(value = "/expenses", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ExpenseController {
 

@@ -13,9 +13,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // Especifica las rutas que deben ser interceptadas
         registry.addInterceptor(jwtInterceptor)
                 .addPathPatterns("/users/**")
-                .addPathPatterns("/groups/**");
+                .addPathPatterns("/groups/**")
+                .addPathPatterns("/expenses/**")
+                .addPathPatterns("/group-categories/**");
     }
 }
