@@ -9,6 +9,7 @@ import ttps.java.grupo1.repository.GroupRepository;
 import ttps.java.grupo1.model.Group;
 import ttps.java.grupo1.repository.UserRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -55,7 +56,7 @@ public class GroupService {
     }
 
     @Transactional
-    public Iterable<Group> findAll() {
+    public List<Group> findAll() {
         return this.groupRepository.findAll();
     }
 

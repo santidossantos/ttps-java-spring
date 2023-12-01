@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ttps.java.grupo1.model.GroupCategory;
 import ttps.java.grupo1.repository.GroupCategoryRepository;
 
+import java.util.Optional;
+
 @Service
 public class GroupCategoryService {
 
@@ -18,8 +20,8 @@ public class GroupCategoryService {
     }
 
     @Transactional
-    public GroupCategory findById(Long id) {
-        return this.groupCategoryRepository.findById(id).get();
+    public Optional<GroupCategory> findById(Long id) {
+        return this.groupCategoryRepository.findById(id);
     }
 
 }

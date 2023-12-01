@@ -10,8 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import ttps.java.grupo1.DTO.AddMemberDTO;
 import ttps.java.grupo1.apidoc.GroupApi;
 import ttps.java.grupo1.model.Group;
+import ttps.java.grupo1.model.GroupCategory;
+import ttps.java.grupo1.model.User;
+import ttps.java.grupo1.service.GroupCategoryService;
 import ttps.java.grupo1.service.GroupService;
+import ttps.java.grupo1.service.UserService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -22,42 +27,71 @@ public class GroupController implements GroupApi {
     @Autowired
     private GroupService groupService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private GroupCategoryService groupCategoryService;
+
     @GetMapping()
-    public ResponseEntity<Iterable<Group>> getGroups() {
-        Iterable<Group> groups = groupService.findAll();
-        return new ResponseEntity<>(groups, HttpStatus.OK);
+    public ResponseEntity<List<Group>> get() {
+        List<Group> groupList = this.groupService.findAll();
+        return groupList.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(groupList, HttpStatus.OK);
     }
 
+
     @GetMapping("/{id}")
-    public ResponseEntity<Group> getGroup(@PathVariable("id") Long id) {
+    public ResponseEntity<Group> get(@Valid @PathVariable("id") Long id) {
         Optional<Group> optionalGroup = groupService.findById(id);
         return optionalGroup.map(group -> new ResponseEntity<>(group, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
-    public ResponseEntity<Group> createGroup(@Valid @RequestBody Group group) {
-        System.out.println("creando grupo: " + group.getName());
+    public ResponseEntity<Group> create(@Valid @RequestBody Group group) {
+        List<User> users = group.getUsers();
+        if (users == null || users.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Long userId = users.get(0).getId();
+        Long categoryId = group.getCategory().getId();
+        Optional<User> user = userService.findById(userId);
+        if (user.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Optional<GroupCategory> categoryOptional = groupCategoryService.findById(categoryId);
+        if (categoryOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         Group newGroup = groupService.save(group);
         return new ResponseEntity<>(newGroup, HttpStatus.CREATED);
     }
 
+
     @PutMapping("/{id}")
-    public ResponseEntity<Group> updateGroup(@PathVariable("id") Long id, @Valid @RequestBody Group group) {
-        System.out.println("actualizando grupo con id: " + id);
-        Group currentGroup = groupService.findById(id).orElse(null);
-        if (currentGroup == null) {
-            System.out.println("Grupo con id: " + id + " no encontrado");
-            return new ResponseEntity<Group>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Group> update(@Valid @PathVariable Long id, @RequestBody Group updatedGroup) {
+        Optional<Group> existingGroupOptional = groupService.findById(id);
+        if (existingGroupOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        currentGroup.setName(group.getName());
-        currentGroup.setUsers(group.getUsers());
-        groupService.update(currentGroup);
-        return new ResponseEntity<>(currentGroup, HttpStatus.OK);
+        Group existingGroup = existingGroupOptional.get();
+        Long categoryId = updatedGroup.getCategory().getId();
+        Optional<GroupCategory> categoryOptional = groupCategoryService.findById(categoryId);
+        if (categoryOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        existingGroup.setName(updatedGroup.getName());
+        existingGroup.setHidden(updatedGroup.isHidden());
+        existingGroup.setCategory(updatedGroup.getCategory());
+        Group updatedGroupResult = groupService.save(existingGroup);
+        return new ResponseEntity<>(updatedGroupResult, HttpStatus.OK);
     }
 
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Group> deleteGroup(@PathVariable("id") Long id) {
+    public ResponseEntity<Group> delete(@Valid @PathVariable("id") Long id) {
         return this.groupService.deleteById(id)
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);

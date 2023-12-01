@@ -33,6 +33,7 @@ public class Group {
     private List<User> users = new ArrayList<>();
 
     @ManyToOne
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private GroupCategory category;
 
     @OneToMany(mappedBy = "group")
