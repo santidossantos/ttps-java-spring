@@ -16,12 +16,10 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // Obtener el token del encabezado de autorizacion
         String token = getJwtFromRequest(request);
 
-        // Validar el token
         if (token != null && jwtService.validateToken(token)) {
-            return true; // Continuar con la solicitud si el token es valido
+            return true; // Continuar con la petecion si el token es valido
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;

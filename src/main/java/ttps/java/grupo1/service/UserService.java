@@ -1,5 +1,6 @@
 package ttps.java.grupo1.service;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +9,7 @@ import ttps.java.grupo1.exception.UserNotFoundException;
 import ttps.java.grupo1.repository.RoleRepository;
 import ttps.java.grupo1.repository.UserRepository;
 import ttps.java.grupo1.model.User;
+import ttps.java.grupo1.security.JwtService;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +22,9 @@ public class UserService {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    private JwtService jwtService;
 
     @Transactional(readOnly = true)
     public List<User> findAll() {
@@ -78,20 +83,20 @@ public class UserService {
         if(userRepository.existsByEmail(user.getEmail())) {
             throw new DuplicateConstraintException("Email already exists");
         }
-
-       user.setPassword(passwordEncoder.encode(user.getPassword()));
+        System.out.println("guardo usuario");
         return userRepository.save(user);
    }
 
+   @Transactional(readOnly = true)
     public String authenticate(String username, String password) {
-        Authentication authentication = authenticationManager.authenticate(
-               new UsernamePasswordAuthenticationToken(
-                       username,
-                        password
-                )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return jwtTokenProvider.generateToken(authentication);
+            Optional<User> user = userRepository.findByUsername(username);
+            if(user.isPresent() && user.get().getPassword().equals(password)) {
+                System.out.println("entro al if");
+                return jwtService.generateToken(username);
+            }
+            else {
+                return null;
+            }
     }
 
 }
