@@ -1,6 +1,5 @@
 package ttps.java.grupo1.service;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +9,8 @@ import ttps.java.grupo1.repository.RoleRepository;
 import ttps.java.grupo1.repository.UserRepository;
 import ttps.java.grupo1.model.User;
 import ttps.java.grupo1.security.JwtService;
+import org.mindrot.jbcrypt.BCrypt;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -79,19 +80,23 @@ public class UserService {
     public User register(User user) throws DuplicateConstraintException {
         if(userRepository.existsByUsername(user.getUsername())) {
             throw new DuplicateConstraintException("Username already exists");
-       }
+        }
         if(userRepository.existsByEmail(user.getEmail())) {
             throw new DuplicateConstraintException("Email already exists");
         }
-        System.out.println("guardo usuario");
+
+        String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        user.setPassword(hashedPassword);
+
         return userRepository.save(user);
    }
 
    @Transactional(readOnly = true)
     public String authenticate(String username, String password) {
             Optional<User> user = userRepository.findByUsername(username);
-            if(user.isPresent() && user.get().getPassword().equals(password)) {
-                System.out.println("entro al if");
+            if(user.isPresent() &&
+                    BCrypt.checkpw(password, BCrypt.hashpw(password, BCrypt.gensalt()))) {
+
                 return jwtService.generateToken(username);
             }
             else {

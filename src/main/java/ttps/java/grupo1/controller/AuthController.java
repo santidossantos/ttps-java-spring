@@ -31,18 +31,20 @@ public class AuthController {
         String password = loginRequest.getPassword();
         String token = this.userService.authenticate(username, password);
 
+        AuthResponseDTO response = new AuthResponseDTO();
+
         if(token != null) {
-            return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
+            response.setToken(token);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
         else {
-            return new ResponseEntity<>(
-                    new AuthResponseDTO("Nombre de usuario o contraseña incorrecta"),
-                    HttpStatus.UNAUTHORIZED);
+            response.setMessage("Nombre de usuario o contraseña incorrecta");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@Valid @RequestBody RegisterDTO registerRequest) throws DuplicateConstraintException {
+    public ResponseEntity<User> register(@Valid @RequestBody RegisterDTO registerRequest) throws DuplicateConstraintException {
 
         User user = new User(
                 registerRequest.getName(),
@@ -52,8 +54,7 @@ public class AuthController {
        );
 
         try {
-            userService.register(user);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(userService.register(user), HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -61,7 +62,6 @@ public class AuthController {
             System.out.println(e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
     }
 
 }
