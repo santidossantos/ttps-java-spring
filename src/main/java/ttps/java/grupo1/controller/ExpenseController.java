@@ -7,12 +7,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ttps.java.grupo1.model.Expense;
-import ttps.java.grupo1.model.ExpenseUsersPays;
-import ttps.java.grupo1.model.User;
-import ttps.java.grupo1.service.ExpenseService;
-import ttps.java.grupo1.service.ExpenseUsersPaysService;
-import ttps.java.grupo1.service.UserService;
+import ttps.java.grupo1.model.*;
+import ttps.java.grupo1.service.*;
+
 import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +27,12 @@ public class ExpenseController {
 
     @Autowired
     private ExpenseUsersPaysService eupService;
+
+    @Autowired
+    private GroupService groupService;
+
+    @Autowired
+    private ExpenseCategoryService expenseCategoryService;
 
     @GetMapping("/")
     public ResponseEntity<List<Expense>> getAllExpenses(){
@@ -49,6 +52,12 @@ public class ExpenseController {
 
     @PostMapping("/")
     public ResponseEntity<Expense> createExpense(@RequestBody Expense expense){
+        Optional<User> user = userService.findById(expense.getPayingUser().getId());
+        Optional<Group> group = groupService.findById(expense.getGroup().getId());
+        Optional<ExpenseCategory> expenseCategory = expenseCategoryService.findById(expense.getCategory().getId());
+        if(user.isEmpty() || group.isEmpty() || expenseCategory.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<Expense>(this.expenseService.saveExpense(expense), HttpStatus.CREATED);
     }
 
