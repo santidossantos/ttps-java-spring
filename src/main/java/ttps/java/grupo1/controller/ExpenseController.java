@@ -56,19 +56,25 @@ public class ExpenseController {
         Optional<Group> group = groupService.findById(expense.getGroup().getId());
         Optional<ExpenseCategory> expenseCategory = expenseCategoryService.findById(expense.getCategory().getId());
         if(user.isEmpty() || group.isEmpty() || expenseCategory.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<Expense>(this.expenseService.saveExpense(expense), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Expense> updateExpenseById(@PathVariable("id") Long id, @RequestBody Expense dataForUpdate) {
-        try{
-            expenseService.updateExpense(id, dataForUpdate);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }catch(DataNotFoundException e){
+        Optional<Expense> expense = expenseService.findById(id);
+        if (expense.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        Optional<User> user = userService.findById(dataForUpdate.getPayingUser().getId());
+        Optional<Group> group = groupService.findById(dataForUpdate.getGroup().getId());
+        Optional<ExpenseCategory> expenseCategory = expenseCategoryService.findById(dataForUpdate.getCategory().getId());
+        if (user.isEmpty() || group.isEmpty() || expenseCategory.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        expenseService.updateExpense(expense.get(), dataForUpdate);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
