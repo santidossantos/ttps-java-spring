@@ -8,8 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ttps.java.grupo1.model.Expense;
+import ttps.java.grupo1.model.ExpenseUsersPays;
+import ttps.java.grupo1.model.User;
 import ttps.java.grupo1.service.ExpenseService;
-
+import ttps.java.grupo1.service.ExpenseUsersPaysService;
+import ttps.java.grupo1.service.UserService;
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +24,12 @@ public class ExpenseController {
 
     @Autowired
     private ExpenseService expenseService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private ExpenseUsersPaysService eupService;
 
     @GetMapping("/")
     public ResponseEntity<List<Expense>> getAllExpenses(){
@@ -57,5 +67,18 @@ public class ExpenseController {
         return this.expenseService.deleteById(id)
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/{id}/addDebtorUser")
+    public ResponseEntity<ExpenseUsersPays> addDebtorUser(@PathVariable("id") Long id, @RequestBody ExpenseUsersPays eup){
+        Optional<Expense> expense = expenseService.findById(id);
+        if (expense.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        Optional<User> user = userService.findById(eup.getUser().getId());
+        if(user.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<ExpenseUsersPays>(eupService.save(eup,id), HttpStatus.CREATED);
     }
 }

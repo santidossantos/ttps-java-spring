@@ -23,7 +23,7 @@ public class ExpenseUsersPays {
     @Column
     private Boolean isPayed;
 
-    @OneToOne(cascade = PERSIST)
+    @OneToOne
     private User user;
 
     public ExpenseUsersPays(Double amountPayed, Boolean isPayed, User user) {
