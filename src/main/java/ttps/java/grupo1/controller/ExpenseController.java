@@ -8,12 +8,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ttps.java.grupo1.model.Expense;
-import ttps.java.grupo1.model.ExpenseUsersPays;
-import ttps.java.grupo1.model.User;
-import ttps.java.grupo1.service.ExpenseService;
-import ttps.java.grupo1.service.ExpenseUsersPaysService;
-import ttps.java.grupo1.service.UserService;
+import ttps.java.grupo1.model.*;
+import ttps.java.grupo1.service.*;
+
 import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +30,12 @@ public class ExpenseController {
     @Autowired
     private ExpenseUsersPaysService eupService;
 
+    @Autowired
+    private GroupService groupService;
+
+    @Autowired
+    private ExpenseCategoryService expenseCategoryService;
+
     @GetMapping("/")
     public ResponseEntity<List<Expense>> getAllExpenses(){
         List<Expense> expenses = expenseService.findAll();
@@ -51,17 +54,29 @@ public class ExpenseController {
 
     @PostMapping("/")
     public ResponseEntity<Expense> createExpense(@RequestBody Expense expense){
+        Optional<User> user = userService.findById(expense.getPayingUser().getId());
+        Optional<Group> group = groupService.findById(expense.getGroup().getId());
+        Optional<ExpenseCategory> expenseCategory = expenseCategoryService.findById(expense.getCategory().getId());
+        if(user.isEmpty() || group.isEmpty() || expenseCategory.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<Expense>(this.expenseService.saveExpense(expense), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Expense> updateExpenseById(@PathVariable("id") Long id, @RequestBody Expense dataForUpdate) {
-        try{
-            expenseService.updateExpense(id, dataForUpdate);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }catch(DataNotFoundException e){
+        Optional<Expense> expense = expenseService.findById(id);
+        if (expense.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        Optional<User> user = userService.findById(dataForUpdate.getPayingUser().getId());
+        Optional<Group> group = groupService.findById(dataForUpdate.getGroup().getId());
+        Optional<ExpenseCategory> expenseCategory = expenseCategoryService.findById(dataForUpdate.getCategory().getId());
+        if (user.isEmpty() || group.isEmpty() || expenseCategory.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        expenseService.updateExpense(expense.get(), dataForUpdate);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

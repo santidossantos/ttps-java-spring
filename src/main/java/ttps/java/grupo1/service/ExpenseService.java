@@ -32,17 +32,15 @@ public class ExpenseService {
     }
 
     @Transactional
-    public void updateExpense(Long id, Expense expenseToUpdate) throws DataNotFoundException {
-        Optional<Expense> optionalExpense = expenseRepository.findById(id);
-        Expense expense = optionalExpense.orElseThrow(() -> new DataNotFoundException("Expense not found"));
-        expense.setAmount(expenseToUpdate.getAmount());
-        expense.setName(expenseToUpdate.getName());
-        expense.setDate(expenseToUpdate.getDate());
-        expense.setImg(expenseToUpdate.getImg());
-        expense.setCategory(expenseToUpdate.getCategory());
-        expense.setExpenseStrategy(expenseToUpdate.getExpenseStrategy());
-        expense.setDebtorsUsers(expenseToUpdate.getDebtorsUsers());
-        expense.setPayingUser(expenseToUpdate.getPayingUser());
+    public void updateExpense(Expense expenseToUpdate, Expense newData){
+        expenseToUpdate.setAmount(newData.getAmount());
+        expenseToUpdate.setName(newData.getName());
+        expenseToUpdate.setDate(newData.getDate());
+        expenseToUpdate.setImg(newData.getImg());
+        expenseToUpdate.setCategory(newData.getCategory());
+        expenseToUpdate.setExpenseStrategy(newData.getExpenseStrategy());
+        expenseToUpdate.setDebtorsUsers(newData.getDebtorsUsers());
+        expenseToUpdate.setPayingUser(newData.getPayingUser());
     }
 
     @Transactional
