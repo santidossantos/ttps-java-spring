@@ -1,21 +1,13 @@
 package ttps.java.grupo1.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ttps.java.grupo1.exception.DuplicateConstraintException;
 import ttps.java.grupo1.exception.UserNotFoundException;
-import ttps.java.grupo1.model.UserRole;
 import ttps.java.grupo1.repository.RoleRepository;
 import ttps.java.grupo1.repository.UserRepository;
 import ttps.java.grupo1.model.User;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,8 +19,6 @@ public class UserService {
 
     @Autowired
     RoleRepository roleRepository;
-
-
 
     @Transactional(readOnly = true)
     public List<User> findAll() {
