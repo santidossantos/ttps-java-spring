@@ -1,5 +1,8 @@
 package ttps.java.grupo1.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,25 +29,29 @@ public class Expense {
     private Double amount;
 
     @Column
+    private String name;
+
+    @Column
     private Date date;
 
     @Column
     private String img;
 
-    @ManyToOne(cascade = PERSIST)
+    @ManyToOne
     @JoinColumn(name="group_id", nullable = false)
+    @JsonBackReference
     private Group group;
 
-    @OneToOne(cascade = PERSIST)
+    @ManyToOne
     private ExpenseCategory category;
 
-    @OneToOne(cascade = PERSIST)
+    @ManyToOne
     private User payingUser;
 
-    @OneToMany(cascade = PERSIST)
+    @OneToMany
     private List<ExpenseUsersPays> debtorsUsers;
 
-    @ManyToOne(cascade = PERSIST)
+    @ManyToOne
     private ExpenseStrategy expenseStrategy;
 
     public Expense(Double amount, Date date, String img, Group group, ExpenseCategory category, User payingUser, List<ExpenseUsersPays> debtorsUsers, ExpenseStrategy expenseStrategy) {
