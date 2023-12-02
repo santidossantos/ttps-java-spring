@@ -30,6 +30,7 @@ public class User {
     private String username;
 
     @JsonIgnore
+    @Column
     private String password;
 
     @Column(length = 50, nullable = false, unique = true)
@@ -46,15 +47,6 @@ public class User {
     @OneToMany(fetch = LAZY, cascade = ALL)
     @JsonIgnore
     private List<User> friendsRequests = new ArrayList<>();
-
-
-    @ManyToMany(fetch = EAGER, cascade = DETACH)
-    @JoinTable(
-        name = "user_role",
-        joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
-    )
-    private List<UserRole> roles = new ArrayList<>();
 
     public User(String name, String username, String password, String email) {
         this.name = name;

@@ -1,5 +1,6 @@
 package ttps.java.grupo1.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 @RestController
 @Validated
+@SecurityRequirement(name = "bearerAuth")
 @RequestMapping(value = "/groups", produces = MediaType.APPLICATION_JSON_VALUE)
 public class GroupController implements GroupApi {
 
@@ -107,7 +109,6 @@ public class GroupController implements GroupApi {
                 .orElse(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(status);
     }
-
 
 }
 

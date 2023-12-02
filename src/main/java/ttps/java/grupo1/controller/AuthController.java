@@ -2,6 +2,7 @@ package ttps.java.grupo1.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,9 @@ import ttps.java.grupo1.exception.DuplicateConstraintException;
 import ttps.java.grupo1.model.User;
 import ttps.java.grupo1.service.UserService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthController {
@@ -23,25 +27,39 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-//    @PostMapping("/register")
-//    public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerDTO) {
-//        User user = new User(registerDTO.getName(), registerDTO.getUsername(),
-//                registerDTO.getPassword(), registerDTO.getEmail()
-//        );
-//
-//        try {
-//            user = userService.register(user);
-//        }
-//        catch (DuplicateConstraintException e) {
-//            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-//        }
-//        return new ResponseEntity<>(user, HttpStatus.CREATED);
-//    }
-//
-//    @PostMapping("/login")
-//    public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
-//        String token = userService.authenticate(loginDTO.getUsername(), loginDTO.getPassword());
-//        return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
-//    }
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@Valid @RequestBody LoginDTO loginRequest) {
+        String username = loginRequest.getUsername();
+        String password = loginRequest.getPassword();
+        String token = this.userService.authenticate(username, password);
+
+        if(token != null) {
+            return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
+        }
+
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("message", "Nombre de usuario o contraseña incorrectos");
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@Valid @RequestBody RegisterDTO registerRequest) throws DuplicateConstraintException {
+
+        User user = new User(
+                registerRequest.getName(),
+                registerRequest.getUsername(),
+                registerRequest.getPassword(),
+                registerRequest.getEmail()
+       );
+
+        try {
+            return new ResponseEntity<>(userService.register(user), HttpStatus.OK);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }
