@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ttps.java.grupo1.DTO.AddMemberDTO;
+import ttps.java.grupo1.DTO.GroupDTO;
 import ttps.java.grupo1.apidoc.GroupApi;
 import ttps.java.grupo1.model.Group;
 import ttps.java.grupo1.model.GroupCategory;
@@ -17,8 +18,7 @@ import ttps.java.grupo1.service.GroupCategoryService;
 import ttps.java.grupo1.service.GroupService;
 import ttps.java.grupo1.service.UserService;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @Validated
@@ -52,62 +52,85 @@ public class GroupController implements GroupApi {
     }
 
     @PostMapping
-    public ResponseEntity<Group> create(@Valid @RequestBody Group group) {
-        List<User> users = group.getUsers();
-        if (users == null || users.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> create(@Valid @RequestBody GroupDTO groupDTO) {
+        Map<String, String> errorResponse = new HashMap<>();
+        if (groupDTO.getCreator() == null) {
+            errorResponse.put("message", "The creator of the group cant be null");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
-        Long userId = users.get(0).getId();
-        Long categoryId = group.getCategory().getId();
-        Optional<User> user = userService.findById(userId);
+        Optional<User> user = userService.findById(groupDTO.getCreator().getId());
         if (user.isEmpty()) {
+            errorResponse.put("message", "The user creator with id provided doesnt exist");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+        Optional<GroupCategory> category = groupCategoryService.findById(groupDTO.getCategory().getId());
+        if (category.isEmpty()) {
+            errorResponse.put("message", "The category with id provided doesnt exist");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Optional<GroupCategory> categoryOptional = groupCategoryService.findById(categoryId);
-        if (categoryOptional.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        List<User> userList = Arrays.asList(groupDTO.getCreator());
+        Group group = new Group(groupDTO.getName(), groupDTO.getHidden(), userList, groupDTO.getCategory());
         Group newGroup = groupService.save(group);
         return new ResponseEntity<>(newGroup, HttpStatus.CREATED);
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<Group> update(@Valid @PathVariable Long id, @RequestBody Group updatedGroup) {
-        Optional<Group> existingGroupOptional = groupService.findById(id);
-        if (existingGroupOptional.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Object> update(@Valid @PathVariable Long id, @RequestBody GroupDTO groupDTO) {
+        Map<String, String> errorResponse = new HashMap<>();
+        Optional<Group> optionalGroup = groupService.findById(id);
+        if (optionalGroup.isEmpty()) {
+            errorResponse.put("message", "The group with id provided doesnt exist");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
-        Group existingGroup = existingGroupOptional.get();
-        Long categoryId = updatedGroup.getCategory().getId();
-        Optional<GroupCategory> categoryOptional = groupCategoryService.findById(categoryId);
-        if (categoryOptional.isEmpty()) {
+        if (groupDTO.getCreator() != null) {
+            errorResponse.put("message", "The creator of the group cant be changed");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+        Optional<GroupCategory> category = groupCategoryService.findById(groupDTO.getCategory().getId());
+        if (category.isEmpty()) {
+            errorResponse.put("message", "The category with id provided doesnt exist");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        existingGroup.setName(updatedGroup.getName());
-        existingGroup.setHidden(updatedGroup.isHidden());
-        existingGroup.setCategory(updatedGroup.getCategory());
-        Group updatedGroupResult = groupService.save(existingGroup);
-        return new ResponseEntity<>(updatedGroupResult, HttpStatus.OK);
+        Group group = new Group(groupDTO.getName(), groupDTO.getHidden(), null, groupDTO.getCategory());
+        group.setUsers(optionalGroup.get().getUsers());
+        group.setId(id);
+        Group newGroup = groupService.update(group);
+        return new ResponseEntity<>(newGroup, HttpStatus.OK);
     }
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Group> delete(@Valid @PathVariable("id") Long id) {
         return this.groupService.deleteById(id)
-                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                ? new ResponseEntity<>(HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/members")
-    public ResponseEntity<Group> addMember(@Valid @RequestBody AddMemberDTO addMemberDTO) {
-        Long groupId = addMemberDTO.getGroupId();
+    public ResponseEntity<Object> addMember(@Valid @RequestBody AddMemberDTO addMemberDTO) {
+        Map<String, String> errorResponse = new HashMap<>();
         Long userId = addMemberDTO.getUserId();
-
-        HttpStatus status = this.groupService.addMember(groupId, userId)
-                .map(group -> HttpStatus.OK)
-                .orElse(HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(status);
+        Optional<User> optionalUser = userService.findById(userId);
+        if (optionalUser.isEmpty()) {
+            errorResponse.put("message", "The user with id provided doesnt exist");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+        Long groupId = addMemberDTO.getGroupId();
+        Optional<Group> optionalGroup = groupService.findById(groupId);
+        if (optionalGroup.isEmpty()) {
+            errorResponse.put("message", "The group with id provided doesnt exist");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+        Group group = optionalGroup.get();
+        List<User> users = group.getUsers();
+        if (users.contains(optionalUser.get())) {
+            errorResponse.put("message", "The user is already a member of the group");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+        users.add(optionalUser.get());
+        group.setUsers(users);
+        Group newGroup = groupService.update(group);
+        return new ResponseEntity<>(newGroup, HttpStatus.OK);
     }
 
 }

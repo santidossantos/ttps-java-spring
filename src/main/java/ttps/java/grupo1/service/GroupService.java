@@ -30,8 +30,8 @@ public class GroupService {
     }
 
     @Transactional
-    public void update(Group currentGroup) {
-        this.groupRepository.save(currentGroup);
+    public Group update(Group currentGroup) {
+        return this.groupRepository.save(currentGroup);
     }
 
     @Transactional

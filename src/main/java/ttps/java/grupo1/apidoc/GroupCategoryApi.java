@@ -19,10 +19,16 @@ public interface GroupCategoryApi {
             summary = "Creates a groupcategory",
             description = "Creates a group category entity and saves it to data source.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Group created"),
-            @ApiResponse(responseCode = "400", description = "Invalid request",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(defaultValue = "Error 400")))
+            @ApiResponse(
+                    responseCode = "201",
+                    content = @Content,
+                    description = "Group category created"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    content = @Content,
+                    description = "Error: Wrong request body"
+            ),
     })
     ResponseEntity<GroupCategory> create(@Valid GroupCategory groupCategory);
 }
