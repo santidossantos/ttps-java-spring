@@ -25,7 +25,7 @@ public class Expense {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private Double amount;
 
     @Column
@@ -38,7 +38,7 @@ public class Expense {
     private String img;
 
     @ManyToOne
-    @JoinColumn(name="group_id", nullable = false)
+    @JoinColumn(name="group_id")
     @JsonBackReference
     private Group group;
 
@@ -54,14 +54,26 @@ public class Expense {
     @ManyToOne
     private ExpenseStrategy expenseStrategy;
 
-    public Expense(Double amount, Date date, String img, Group group, ExpenseCategory category, User payingUser, List<ExpenseUsersPays> debtorsUsers, ExpenseStrategy expenseStrategy) {
+    public Expense(Double amount, String name, Date date, String img, Group group, ExpenseCategory category, User payingUser, List<ExpenseUsersPays> debtorsUsers, ExpenseStrategy expenseStrategy) {
         this.amount = amount;
+        this.name = name;
         this.date = date;
         this.img = img;
         this.group = group;
         this.category = category;
         this.payingUser = payingUser;
         this.debtorsUsers = debtorsUsers;
+        this.expenseStrategy = expenseStrategy;
+    }
+
+    public Expense(Double amount, String name, Date date, String img, Group group, ExpenseCategory category, User payingUser, ExpenseStrategy expenseStrategy) {
+        this.amount = amount;
+        this.name = name;
+        this.date = date;
+        this.img = img;
+        this.group = group;
+        this.category = category;
+        this.payingUser = payingUser;
         this.expenseStrategy = expenseStrategy;
     }
 

@@ -1,6 +1,8 @@
 package ttps.java.grupo1.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import ttps.java.grupo1.DTO.AddExpenseDTO;
 import ttps.java.grupo1.exception.DataNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,13 +55,14 @@ public class ExpenseController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Expense> createExpense(@RequestBody Expense expense){
-        Optional<User> user = userService.findById(expense.getPayingUser().getId());
-        Optional<Group> group = groupService.findById(expense.getGroup().getId());
-        Optional<ExpenseCategory> expenseCategory = expenseCategoryService.findById(expense.getCategory().getId());
+    public ResponseEntity<Expense> createExpense(@Valid @RequestBody AddExpenseDTO expenseDTO){
+        Optional<User> user = userService.findById(expenseDTO.getPayingUser().getId());
+        Optional<Group> group = groupService.findById(expenseDTO.getGroup().getId());
+        Optional<ExpenseCategory> expenseCategory = expenseCategoryService.findById(expenseDTO.getCategory().getId());
         if(user.isEmpty() || group.isEmpty() || expenseCategory.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        Expense expense = new Expense(expenseDTO.getAmount(),expenseDTO.getName(), expenseDTO.getDate(), expenseDTO.getImg(), expenseDTO.getGroup(), expenseDTO.getCategory(), expenseDTO.getPayingUser(), expenseDTO.getExpenseStrategy());
         return new ResponseEntity<Expense>(this.expenseService.saveExpense(expense), HttpStatus.CREATED);
     }
 
