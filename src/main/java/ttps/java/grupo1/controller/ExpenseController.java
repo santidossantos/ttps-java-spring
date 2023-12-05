@@ -1,5 +1,6 @@
 package ttps.java.grupo1.controller;
 
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import ttps.java.grupo1.DTO.AddExpenseDTO;
@@ -9,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ttps.java.grupo1.DTO.ExpenseUsersPaysDTO;
 import ttps.java.grupo1.model.*;
 import ttps.java.grupo1.service.*;
 
@@ -60,15 +62,15 @@ public class ExpenseController {
         Optional<User> user = userService.findById(expenseDTO.getPayingUser().getId());
         Map<String, String> errorResponse = new HashMap<>();
         if(user.isEmpty()){
-            errorResponse.put("message", "The paying user of the expense cannot be null");
+            errorResponse.put("message", "The paying user written doesnt exists");
         }
         Optional<Group> group = groupService.findById(expenseDTO.getGroup().getId());
         if(group.isEmpty()){
-            errorResponse.put("message", "The group of the expense cannot be null");
+            errorResponse.put("message", "The group written doesnt exists");
         }
         Optional<ExpenseCategory> expenseCategory = expenseCategoryService.findById(expenseDTO.getCategory().getId());
          if(expenseCategory.isEmpty()) {
-             errorResponse.put("message", "The category of the expense cannot be null");
+             errorResponse.put("message", "The category written doesnt exists");
              return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
          }
         Expense expense = new Expense(expenseDTO.getAmount(),expenseDTO.getName(), expenseDTO.getDate(), expenseDTO.getImg(), expenseDTO.getGroup(), expenseDTO.getCategory(), expenseDTO.getPayingUser(), expenseDTO.getExpenseStrategy());
@@ -84,11 +86,11 @@ public class ExpenseController {
         }
         Optional<User> user = userService.findById(dataForUpdate.getPayingUser().getId());
         if(user.isEmpty()){
-            errorResponse.put("message", "The paying user of the expense cannot be null");
+            errorResponse.put("message", "The paying user written doesnt exists");
         }
         Optional<Group> group = groupService.findById(dataForUpdate.getGroup().getId());
         if(group.isEmpty()){
-            errorResponse.put("message", "The group of the expense cannot be null");
+            errorResponse.put("message", "The group written doesnt exists");
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
         Optional<ExpenseCategory> expenseCategory = expenseCategoryService.findById(dataForUpdate.getCategory().getId());
@@ -102,18 +104,18 @@ public class ExpenseController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PutMapping("/{id}/addDebtorUser")
-    public ResponseEntity<Object> addDebtorUser(@PathVariable("id") Long id, @RequestBody ExpenseUsersPays eup){
+    @PostMapping("/{id}/debtorUser")
+    public ResponseEntity<Object> addDebtorUser(@PathVariable("id") Long id, @Valid @RequestBody ExpenseUsersPaysDTO eupDTO){
+        ExpenseUsersPays eup = new ExpenseUsersPays(eupDTO.getAmountPayed(), eupDTO.getIsPayed(), eupDTO.getUser());
         Optional<Expense> expense = expenseService.findById(id);
         Map<String, String> errorResponse = new HashMap<>();
-        if (expense.isEmpty()){
+        if (expense.isEmpty()) {
             errorResponse.put("message", "That expense doesnt exists");
         }
-        //Controlar que no se manda ningun user
         Optional<User> user = userService.findById(eup.getUser().getId());
         if(user.isEmpty()) {
             errorResponse.put("message", "That user doesnt exists");
-            return new ResponseEntity<>(errorResponse, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(eupService.save(eup,id), HttpStatus.CREATED);
     }
