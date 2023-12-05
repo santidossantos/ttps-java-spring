@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ttps.java.grupo1.DTO.AuthResponseDTO;
 import ttps.java.grupo1.DTO.LoginDTO;
 import ttps.java.grupo1.DTO.RegisterDTO;
+import ttps.java.grupo1.apidoc.AuthApi;
 import ttps.java.grupo1.exception.DuplicateConstraintException;
 import ttps.java.grupo1.model.User;
 import ttps.java.grupo1.service.UserService;
@@ -19,7 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
-public class AuthController {
+public class AuthController implements AuthApi {
 
     @Autowired
     private UserService userService;

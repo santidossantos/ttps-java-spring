@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import ttps.java.grupo1.model.Group;
 import ttps.java.grupo1.model.GroupCategory;
 
-@Tag(name = "GroupCategory API", description = "GroupCategory related API")
+@Tag(name = "GroupCategory API")
 public interface GroupCategoryApi {
 
     @Operation(

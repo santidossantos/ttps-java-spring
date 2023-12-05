@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ttps.java.grupo1.DTO.FriendRequestDTO;
 import ttps.java.grupo1.DTO.UserDTO;
+import ttps.java.grupo1.apidoc.UserApi;
 import ttps.java.grupo1.exception.UserNotFoundException;
 import ttps.java.grupo1.model.User;
 import ttps.java.grupo1.service.UserService;
@@ -22,7 +23,7 @@ import java.util.Optional;
 @Validated
 @SecurityRequirement(name = "bearerAuth")
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
-public class UserController {
+public class UserController implements UserApi {
 
     @Autowired
     private UserService userService;
