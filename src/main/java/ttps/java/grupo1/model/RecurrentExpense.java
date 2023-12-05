@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
+import ttps.java.grupo1.model.strategy.ExpenseStrategy;
 
 import java.util.Date;
 import java.util.List;
@@ -24,8 +25,8 @@ public class RecurrentExpense extends Expense{
     @Column
     private Integer period;
 
-    public RecurrentExpense(Double amount, Date date, String img, Group group, ExpenseCategory category, User payingUser, List<ExpenseUsersPays> debtorsUsers, Integer period) {
-        super(amount, date, img, group, category, payingUser, debtorsUsers, null);
+    public RecurrentExpense(Double amount, String name, Date date, String img, Group group, ExpenseCategory category, User payingUser, List<ExpenseUsersPays> debtorsUsers, ExpenseStrategy expenseStrategy, Integer period) {
+        super(amount, name, date, img, group, category, payingUser, debtorsUsers, expenseStrategy);
         this.period = period;
     }
 }
