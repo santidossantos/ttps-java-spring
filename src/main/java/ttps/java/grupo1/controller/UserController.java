@@ -23,7 +23,6 @@ import java.util.Optional;
 @Validated
 @SecurityRequirement(name = "bearerAuth")
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
-
 public class UserController implements UserApi {
 
     @Autowired
