@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ttps.java.grupo1.DTO.ExpenseUsersPaysDTO;
+import ttps.java.grupo1.apidoc.ExpenseApi;
 import ttps.java.grupo1.model.*;
 import ttps.java.grupo1.service.*;
 
@@ -23,7 +24,7 @@ import java.util.Optional;
 @Validated
 @SecurityRequirement(name = "bearerAuth")
 @RequestMapping(value = "/expenses", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ExpenseController {
+public class ExpenseController implements ExpenseApi{
 
     @Autowired
     private ExpenseService expenseService;
