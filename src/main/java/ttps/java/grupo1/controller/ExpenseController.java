@@ -1,18 +1,22 @@
 package ttps.java.grupo1.controller;
 
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import ttps.java.grupo1.exception.DataNotFoundException;
+import jakarta.validation.Valid;
+import ttps.java.grupo1.DTO.AddExpenseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ttps.java.grupo1.DTO.ExpenseUsersPaysDTO;
 import ttps.java.grupo1.model.*;
 import ttps.java.grupo1.service.*;
 
-import javax.swing.text.html.Option;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -47,36 +51,50 @@ public class ExpenseController {
     @GetMapping("/{id}")
     public ResponseEntity<Expense> getExpenseById(@PathVariable("id") Long id){
         Optional<Expense> expense = expenseService.findById(id);
-        return expense.isPresent()
-                ? new ResponseEntity<>(expense.get(), HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return expense.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(expense.get(), HttpStatus.OK);
     }
 
+
     @PostMapping("/")
-    public ResponseEntity<Expense> createExpense(@RequestBody Expense expense){
-        Optional<User> user = userService.findById(expense.getPayingUser().getId());
-        Optional<Group> group = groupService.findById(expense.getGroup().getId());
-        Optional<ExpenseCategory> expenseCategory = expenseCategoryService.findById(expense.getCategory().getId());
-        if(user.isEmpty() || group.isEmpty() || expenseCategory.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Object> createExpense(@Valid @RequestBody AddExpenseDTO expenseDTO){
+        Optional<User> user = userService.findById(expenseDTO.getPayingUser().getId());
+        Map<String, String> errorResponse = new HashMap<>();
+        if(user.isEmpty()){
+            errorResponse.put("message", "The paying user written doesnt exists");
         }
-        return new ResponseEntity<Expense>(this.expenseService.saveExpense(expense), HttpStatus.CREATED);
+        Optional<Group> group = groupService.findById(expenseDTO.getGroup().getId());
+        if(group.isEmpty()){
+            errorResponse.put("message", "The group written doesnt exists");
+        }
+        Optional<ExpenseCategory> expenseCategory = expenseCategoryService.findById(expenseDTO.getCategory().getId());
+         if(expenseCategory.isEmpty()) {
+             errorResponse.put("message", "The category written doesnt exists");
+             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+         }
+        Expense expense = new Expense(expenseDTO.getAmount(),expenseDTO.getName(), expenseDTO.getDate(), expenseDTO.getImg(), expenseDTO.getGroup(), expenseDTO.getCategory(), expenseDTO.getPayingUser(), expenseDTO.getExpenseStrategy());
+        return new ResponseEntity<>(this.expenseService.saveExpense(expense), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Expense> updateExpenseById(@PathVariable("id") Long id, @RequestBody Expense dataForUpdate) {
+    public ResponseEntity<Object> updateExpenseById(@PathVariable("id") Long id, @RequestBody Expense dataForUpdate) {
         Optional<Expense> expense = expenseService.findById(id);
+        Map<String, String> errorResponse = new HashMap<>();
         if (expense.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            errorResponse.put("message", "That expense doesnt exists");
         }
         Optional<User> user = userService.findById(dataForUpdate.getPayingUser().getId());
-        Optional<Group> group = groupService.findById(dataForUpdate.getGroup().getId());
-        Optional<ExpenseCategory> expenseCategory = expenseCategoryService.findById(dataForUpdate.getCategory().getId());
-        if (user.isEmpty() || group.isEmpty() || expenseCategory.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if(user.isEmpty()){
+            errorResponse.put("message", "The paying user written doesnt exists");
         }
-        expenseService.updateExpense(expense.get(), dataForUpdate);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Optional<Group> group = groupService.findById(dataForUpdate.getGroup().getId());
+        if(group.isEmpty()){
+            errorResponse.put("message", "The group written doesnt exists");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+        Optional<ExpenseCategory> expenseCategory = expenseCategoryService.findById(dataForUpdate.getCategory().getId());
+        return new ResponseEntity<>(expenseService.updateExpense(expense.get(), dataForUpdate), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -86,16 +104,19 @@ public class ExpenseController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PutMapping("/{id}/addDebtorUser")
-    public ResponseEntity<ExpenseUsersPays> addDebtorUser(@PathVariable("id") Long id, @RequestBody ExpenseUsersPays eup){
+    @PostMapping("/{id}/debtorUser")
+    public ResponseEntity<Object> addDebtorUser(@PathVariable("id") Long id, @Valid @RequestBody ExpenseUsersPaysDTO eupDTO){
+        ExpenseUsersPays eup = new ExpenseUsersPays(eupDTO.getAmountPayed(), eupDTO.getIsPayed(), eupDTO.getUser());
         Optional<Expense> expense = expenseService.findById(id);
-        if (expense.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        Map<String, String> errorResponse = new HashMap<>();
+        if (expense.isEmpty()) {
+            errorResponse.put("message", "That expense doesnt exists");
         }
         Optional<User> user = userService.findById(eup.getUser().getId());
         if(user.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            errorResponse.put("message", "That user doesnt exists");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<ExpenseUsersPays>(eupService.save(eup,id), HttpStatus.CREATED);
+        return new ResponseEntity<>(eupService.save(eup,id), HttpStatus.CREATED);
     }
 }

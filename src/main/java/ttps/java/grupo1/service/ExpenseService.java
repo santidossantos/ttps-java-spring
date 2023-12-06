@@ -32,7 +32,7 @@ public class ExpenseService {
     }
 
     @Transactional
-    public void updateExpense(Expense expenseToUpdate, Expense newData){
+    public Expense updateExpense(Expense expenseToUpdate, Expense newData){
         expenseToUpdate.setAmount(newData.getAmount());
         expenseToUpdate.setName(newData.getName());
         expenseToUpdate.setDate(newData.getDate());
@@ -41,6 +41,7 @@ public class ExpenseService {
         expenseToUpdate.setExpenseStrategy(newData.getExpenseStrategy());
         expenseToUpdate.setDebtorsUsers(newData.getDebtorsUsers());
         expenseToUpdate.setPayingUser(newData.getPayingUser());
+        return expenseToUpdate;
     }
 
     @Transactional
