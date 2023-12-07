@@ -36,7 +36,7 @@ public class AddExpenseDTO {
     @NotNull
     private User payingUser;
 
-    //@NotEmpty
+    @NotNull
     private ExpenseStrategy expenseStrategy;
 
     private List<ExpenseUsersPays> debtorsUsers;
