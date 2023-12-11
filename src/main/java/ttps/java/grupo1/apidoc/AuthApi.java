@@ -37,7 +37,7 @@ public interface AuthApi {
                     description = "Error: Username or email already in use"
             ),
     })
-    ResponseEntity<User> register(@Valid @RequestBody RegisterDTO registerRequest) throws DuplicateConstraintException;
+    ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerRequest) throws DuplicateConstraintException;
 
 
     @Operation(
