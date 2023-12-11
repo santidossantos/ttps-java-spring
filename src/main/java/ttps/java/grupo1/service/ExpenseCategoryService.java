@@ -7,6 +7,7 @@ import ttps.java.grupo1.model.Expense;
 import ttps.java.grupo1.model.ExpenseCategory;
 import ttps.java.grupo1.repository.ExpenseCategoryRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,4 +21,8 @@ public class ExpenseCategoryService {
         return expenseCategoryRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
+    public List<ExpenseCategory> findAll(){
+        return expenseCategoryRepository.findAll();
+    }
 }

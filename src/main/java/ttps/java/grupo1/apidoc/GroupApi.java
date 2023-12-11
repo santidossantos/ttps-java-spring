@@ -13,7 +13,7 @@ import ttps.java.grupo1.model.Group;
 
 import java.util.List;
 
-@Tag(name = "Group API", description = "Group related API")
+@Tag(name = "Group API")
 public interface GroupApi {
 
     @Operation(

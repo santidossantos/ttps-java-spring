@@ -17,7 +17,7 @@ public class ExpenseUsersPays {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private Double amountPayed;
 
     @Column
