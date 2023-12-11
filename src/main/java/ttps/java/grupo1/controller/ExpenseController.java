@@ -120,4 +120,12 @@ public class ExpenseController implements ExpenseApi{
         }
         return new ResponseEntity<>(eupService.save(eup,id), HttpStatus.CREATED);
     }
+
+    @GetMapping("/{id}/group")
+    public ResponseEntity<Group> getGroupOfAExpense(@PathVariable("id") Long id){
+        Optional<Expense> expense = expenseService.findById(id);
+        return expense.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(expense.get().getGroup(), HttpStatus.OK);
+    }
 }
