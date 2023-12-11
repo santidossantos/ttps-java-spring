@@ -2,7 +2,6 @@ package ttps.java.grupo1.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +39,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@Valid @RequestBody RegisterDTO registerRequest) throws DuplicateConstraintException {
+    public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerRequest) {
 
         User user = new User(
                 registerRequest.getName(),
@@ -51,8 +50,10 @@ public class AuthController {
 
         try {
             return new ResponseEntity<>(userService.register(user), HttpStatus.OK);
-        } catch (DataIntegrityViolationException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (DuplicateConstraintException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
         }
         catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

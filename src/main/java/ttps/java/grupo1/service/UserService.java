@@ -79,10 +79,10 @@ public class UserService {
     @Transactional
     public User register(User user) throws DuplicateConstraintException {
         if(userRepository.existsByUsername(user.getUsername())) {
-            throw new DuplicateConstraintException("Username already exists");
+            throw new DuplicateConstraintException("El nombre de usuario ingresado ya está en uso");
         }
         if(userRepository.existsByEmail(user.getEmail())) {
-            throw new DuplicateConstraintException("Email already exists");
+            throw new DuplicateConstraintException("El email ingresado ya está en uso");
         }
 
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
