@@ -12,6 +12,7 @@ import ttps.java.grupo1.DTO.FriendRequestDTO;
 import ttps.java.grupo1.DTO.UserDTO;
 import ttps.java.grupo1.apidoc.UserApi;
 import ttps.java.grupo1.exception.UserNotFoundException;
+import ttps.java.grupo1.model.Group;
 import ttps.java.grupo1.model.User;
 import ttps.java.grupo1.service.UserService;
 import org.springframework.validation.annotation.Validated;
@@ -44,6 +45,12 @@ public class UserController implements UserApi {
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("/username/{username}")
+    public ResponseEntity<User> getByUsername(@PathVariable("username") String username) {
+        Optional<User> user = this.userService.findByUsername(username);
+        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<User> update(@PathVariable("id") Long id, @Valid @RequestBody UserDTO userDTO) {
@@ -52,14 +59,11 @@ public class UserController implements UserApi {
         try {
             userService.updateById(id, user);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        catch (UserNotFoundException e) {
+        } catch (UserNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        catch (DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -92,6 +96,13 @@ public class UserController implements UserApi {
     public ResponseEntity<User> getFriend(@PathVariable("id") Long id, @PathVariable("friendId") Long friendId) {
         Optional<User> user = this.userService.findById(id);
         return user.map(value -> new ResponseEntity<>(value.getFriends().get(0), HttpStatus.OK)).
+                orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/{id}/groups")
+    public ResponseEntity<List<Group>> getGroups(@PathVariable("id") Long id) {
+        Optional<User> user = this.userService.findById(id);
+        return user.map(value -> new ResponseEntity<>(value.getGroups(), HttpStatus.OK)).
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
