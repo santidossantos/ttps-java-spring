@@ -5,13 +5,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ttps.java.grupo1.exception.DuplicateConstraintException;
 import ttps.java.grupo1.exception.UserNotFoundException;
+import ttps.java.grupo1.model.Group;
 import ttps.java.grupo1.repository.RoleRepository;
 import ttps.java.grupo1.repository.UserRepository;
 import ttps.java.grupo1.model.User;
+import ttps.java.grupo1.model.Expense;
 import ttps.java.grupo1.security.JwtService;
 import org.mindrot.jbcrypt.BCrypt;
 
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,6 +100,21 @@ public class UserService {
                 return jwtService.generateToken(username);
             }
             return null;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Expense> getExpensesOfUserWithUsername(String username){
+        Optional<User> user = userRepository.findByUsername(username);
+        List<Expense> filteredExpense = new ArrayList<>();
+        if (user.isPresent()) {
+            List<Group> groupsOfUser = user.get().getGroups();
+            filteredExpense = groupsOfUser
+                    .stream().map(Group::getExpenses)
+                    .flatMap(List::stream)
+                    .filter(expense -> expense.getPayingUser() == user.get())
+                    .toList();
+        }
+        return filteredExpense;
     }
 
 }
