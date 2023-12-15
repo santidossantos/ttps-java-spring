@@ -31,6 +31,9 @@ public abstract class ExpenseStrategy {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @Column
+    private String name;
+
     public abstract double calculateAmount();
 
 }

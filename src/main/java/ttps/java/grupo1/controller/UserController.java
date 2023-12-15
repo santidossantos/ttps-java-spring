@@ -12,13 +12,13 @@ import ttps.java.grupo1.DTO.FriendRequestDTO;
 import ttps.java.grupo1.DTO.UserDTO;
 import ttps.java.grupo1.apidoc.UserApi;
 import ttps.java.grupo1.exception.UserNotFoundException;
+import ttps.java.grupo1.model.Expense;
 import ttps.java.grupo1.model.Group;
 import ttps.java.grupo1.model.User;
 import ttps.java.grupo1.service.UserService;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @Validated
@@ -106,4 +106,12 @@ public class UserController implements UserApi {
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+
+    @GetMapping("/{username}/expense")
+    public ResponseEntity<List<Expense>> getExpensesWithUsername(@PathVariable("username") String username) {
+        List<Expense> expenses = this.userService.getExpensesOfUserWithUsername(username);
+        return expenses.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(expenses, HttpStatus.OK);
+    }
 }
