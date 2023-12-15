@@ -7,13 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ttps.java.grupo1.apidoc.GroupCategoryApi;
 import ttps.java.grupo1.model.GroupCategory;
 import ttps.java.grupo1.service.GroupCategoryService;
+
+import java.util.List;
 
 @RestController
 @Validated
@@ -29,6 +28,14 @@ public class GroupCategoryController implements GroupCategoryApi {
         System.out.println("creando categoria de grupo: " + groupCategory.getName());
         GroupCategory newGroupCategory = groupCategoryService.save(groupCategory);
         return new ResponseEntity<>(newGroupCategory, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity <List<GroupCategory>> getAll() {
+        List<GroupCategory> groupCategoryList = groupCategoryService.findAll();
+        return groupCategoryList.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(groupCategoryList, HttpStatus.OK);
     }
 
 }
