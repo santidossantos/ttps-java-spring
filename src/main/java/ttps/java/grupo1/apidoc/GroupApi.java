@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import ttps.java.grupo1.DTO.AddMemberDTO;
 import ttps.java.grupo1.DTO.GroupDTO;
 import ttps.java.grupo1.model.Group;
@@ -100,7 +102,7 @@ public interface GroupApi {
                             "Error: The creator of the group cant be changed<br/>"
             ),
     })
-    ResponseEntity<Object> update(@Valid Long id, GroupDTO groupDTO);
+    ResponseEntity<Object> update(@Valid @PathVariable Long id, @Valid @RequestBody GroupDTO groupDTO);
 
     @Operation(
             summary = "Deletes a group",

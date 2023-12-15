@@ -75,7 +75,7 @@ public class GroupController implements GroupApi {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@Valid @PathVariable Long id, @RequestBody GroupDTO groupDTO) {
+    public ResponseEntity<Object> update(@Valid @PathVariable Long id,@Valid @RequestBody GroupDTO groupDTO) {
         Map<String, String> errorResponse = new HashMap<>();
         Optional<Group> optionalGroup = groupService.findById(id);
         if (optionalGroup.isEmpty()) {
