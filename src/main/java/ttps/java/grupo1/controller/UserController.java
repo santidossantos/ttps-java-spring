@@ -45,6 +45,12 @@ public class UserController implements UserApi {
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("/username/{username}")
+    public ResponseEntity<User> getByUsername(@PathVariable("username") String username) {
+        Optional<User> user = this.userService.findByUsername(username);
+        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<User> update(@PathVariable("id") Long id, @Valid @RequestBody UserDTO userDTO) {
@@ -92,6 +98,14 @@ public class UserController implements UserApi {
         return user.map(value -> new ResponseEntity<>(value.getFriends().get(0), HttpStatus.OK)).
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+    @GetMapping("/{id}/groups")
+    public ResponseEntity<List<Group>> getGroups(@PathVariable("id") Long id) {
+        Optional<User> user = this.userService.findById(id);
+        return user.map(value -> new ResponseEntity<>(value.getGroups(), HttpStatus.OK)).
+                orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
 
     @GetMapping("/{username}/expense")
     public ResponseEntity<List<Expense>> getExpensesWithUsername(@PathVariable("username") String username) {

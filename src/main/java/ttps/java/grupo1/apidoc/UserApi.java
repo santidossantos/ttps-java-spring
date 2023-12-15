@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import ttps.java.grupo1.DTO.FriendRequestDTO;
 import ttps.java.grupo1.DTO.UserDTO;
+import ttps.java.grupo1.model.Group;
 import ttps.java.grupo1.model.User;
 
 import java.util.List;
@@ -51,6 +52,23 @@ public interface UserApi {
             ),
     })
     ResponseEntity<User> get(@PathVariable("id") Long id);
+
+    @Operation(
+            summary = "Get a user",
+            description = "Returns a user by username.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content,
+                    description = "User"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    content = @Content,
+                    description = "User not found"
+            ),
+    })
+    ResponseEntity<User> getByUsername(@PathVariable("username") String username);
 
     @Operation(
             summary = "Update a user",
@@ -147,4 +165,22 @@ public interface UserApi {
             ),
     })
     ResponseEntity<User> getFriend(@PathVariable("id") Long id, @PathVariable("friendId") Long friendId);
+
+    @Operation(
+            summary = "Get all groups of user",
+            description = "Returns a list of all groups of a user with provided id.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content,
+                    description = "List of groups"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    content = @Content,
+                    description = "User not found"
+            ),
+    })
+    public ResponseEntity<List<Group>> getGroups(@PathVariable("id") Long id);
+
 }
