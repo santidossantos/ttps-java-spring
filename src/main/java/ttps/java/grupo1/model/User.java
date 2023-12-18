@@ -1,7 +1,6 @@
 package ttps.java.grupo1.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -44,9 +42,8 @@ public class User {
     @JsonIgnore
     private List<User> friends = new ArrayList<>();
 
-    @OneToMany(fetch = LAZY, cascade = ALL)
-    @JsonIgnore
-    private List<User> friendsRequests = new ArrayList<>();
+    @Column
+    private String avatar;
 
     public User(String name, String username, String password, String email) {
         this.name = name;

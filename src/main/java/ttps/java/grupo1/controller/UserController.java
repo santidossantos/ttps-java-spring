@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ttps.java.grupo1.DTO.FriendRequestDTO;
 import ttps.java.grupo1.DTO.UserDTO;
 import ttps.java.grupo1.apidoc.UserApi;
@@ -15,9 +16,11 @@ import ttps.java.grupo1.exception.UserNotFoundException;
 import ttps.java.grupo1.model.Expense;
 import ttps.java.grupo1.model.Group;
 import ttps.java.grupo1.model.User;
+import ttps.java.grupo1.service.ImageService;
 import ttps.java.grupo1.service.UserService;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -28,6 +31,9 @@ public class UserController implements UserApi {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ImageService imageService;
 
     @GetMapping
     public ResponseEntity<List<User>> get() {
@@ -106,12 +112,47 @@ public class UserController implements UserApi {
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-
     @GetMapping("/{username}/expense")
     public ResponseEntity<List<Expense>> getExpensesWithUsername(@PathVariable("username") String username) {
         List<Expense> expenses = this.userService.getExpensesOfUserWithUsername(username);
         return expenses.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(expenses, HttpStatus.OK);
+    }
+
+    @PostMapping("/avatar/upload")
+    public void createAd(@RequestParam("avatarFile") MultipartFile[] avatarFile) throws IOException {
+        System.out.println("en el post");
+        String uploadDirectory = "src/main/resources/static/";
+        StringBuilder avatarImageString = new StringBuilder();
+
+        for (MultipartFile imageFile : avatarFile) {
+            avatarImageString.append(imageService.saveImageToStorage(uploadDirectory, imageFile));
+        }
+
+        Optional<User> user = userService.findByUsername("santi");
+        if(user.isPresent()) {
+            User userToModify = user.get();
+            userToModify.setAvatar(avatarImageString.toString());
+            userService.save(userToModify);
+        }
+
+    }
+
+    @GetMapping("{username}/avatar/")
+    public ResponseEntity<List<byte[]>> getImages(@PathVariable("username") String username) {
+        try {
+            String imageDirectory = "src/main/resources/static/";
+
+            String avatar = userService.getAvatar(username);
+            List<byte[]> imageBytesList = new ArrayList<>();
+
+            byte[] imageBytes = imageService.getImage(imageDirectory, avatar);
+            imageBytesList.add(imageBytes);
+
+            return ResponseEntity.ok().body(imageBytesList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 }
