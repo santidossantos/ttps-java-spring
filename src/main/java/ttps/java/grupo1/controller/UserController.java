@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -121,8 +122,7 @@ public class UserController implements UserApi {
     }
 
     @PostMapping("/avatar/upload")
-    public void createAd(@RequestParam("avatarFile") MultipartFile[] avatarFile) throws IOException {
-        System.out.println("en el post");
+    public void createAd(@RequestParam("username") String username, @RequestParam("avatarFile") MultipartFile[] avatarFile) throws IOException {
         String uploadDirectory = "src/main/resources/static/";
         StringBuilder avatarImageString = new StringBuilder();
 
@@ -130,27 +130,26 @@ public class UserController implements UserApi {
             avatarImageString.append(imageService.saveImageToStorage(uploadDirectory, imageFile));
         }
 
-        Optional<User> user = userService.findByUsername("santi");
-        if(user.isPresent()) {
+        Optional<User> user = userService.findByUsername(username);
+        if (user.isPresent()) {
             User userToModify = user.get();
             userToModify.setAvatar(avatarImageString.toString());
             userService.save(userToModify);
         }
-
     }
 
     @GetMapping("{username}/avatar/")
-    public ResponseEntity<List<byte[]>> getImages(@PathVariable("username") String username) {
+    public ResponseEntity<byte[]> getImages(@PathVariable("username") String username) {
         try {
             String imageDirectory = "src/main/resources/static/";
 
             String avatar = userService.getAvatar(username);
-            List<byte[]> imageBytesList = new ArrayList<>();
-
             byte[] imageBytes = imageService.getImage(imageDirectory, avatar);
-            imageBytesList.add(imageBytes);
 
-            return ResponseEntity.ok().body(imageBytesList);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_PNG);
+
+            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
