@@ -102,6 +102,7 @@ public class UserService {
             return null;
     }
 
+    @Transactional(readOnly = true)
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -119,6 +120,11 @@ public class UserService {
                     .toList();
         }
         return filteredExpense;
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> getUsersWithFilter(String filter){
+        return userRepository.findUserWithFilter(filter);
     }
 
 }
