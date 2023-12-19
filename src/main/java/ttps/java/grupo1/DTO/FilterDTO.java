@@ -8,4 +8,7 @@ public class FilterDTO {
 
     @NotNull
     private String filter;
+
+    @NotNull
+    private Long userId;
 }

@@ -41,7 +41,10 @@ public class UserController implements UserApi {
 
     @PostMapping
     public ResponseEntity<List<User>> getUsersWithFilter(@RequestBody FilterDTO filterDTO){
+        Optional<User> user = this.userService.findById(filterDTO.getUserId());
+        if(user.isEmpty()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         List<User> userList = this.userService.getUsersWithFilter(filterDTO.getFilter());
+        userList.removeAll(user.get().getFriends());
         return userList.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(userList, HttpStatus.OK);
