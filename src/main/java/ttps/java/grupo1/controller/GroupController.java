@@ -69,7 +69,7 @@ public class GroupController implements GroupApi {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         List<User> userList = Arrays.asList(groupDTO.getCreator());
-        Group group = new Group(groupDTO.getName(), groupDTO.getHidden(), userList, groupDTO.getCategory());
+        Group group = new Group(groupDTO.getName(), groupDTO.getHidden(), userList, groupDTO.getCategory(), groupDTO.getImg());
         Group newGroup = groupService.save(group);
         return new ResponseEntity<>(newGroup, HttpStatus.CREATED);
     }
@@ -91,7 +91,7 @@ public class GroupController implements GroupApi {
             errorResponse.put("message", "The category with id provided doesnt exist");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Group group = new Group(groupDTO.getName(), groupDTO.getHidden(), null, groupDTO.getCategory());
+        Group group = new Group(groupDTO.getName(), groupDTO.getHidden(), null, groupDTO.getCategory(), groupDTO.getImg());
         group.setUsers(optionalGroup.get().getUsers());
         group.setId(id);
         Group newGroup = groupService.update(group);
@@ -131,6 +131,14 @@ public class GroupController implements GroupApi {
         group.setUsers(users);
         Group newGroup = groupService.update(group);
         return new ResponseEntity<>(newGroup, HttpStatus.OK);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<Group>> findMyGroups(@RequestHeader("Authorization") String token) {
+        List<Group> myGroups = groupService.findMyGroups(token);
+        return myGroups.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(myGroups, HttpStatus.OK);
     }
 
 }

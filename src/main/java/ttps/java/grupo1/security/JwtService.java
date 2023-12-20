@@ -29,7 +29,9 @@ public class JwtService {
     }
 
     public String getUsernameFromToken(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+        String another_secret = "secret";
+        token = token.replace("Bearer ", "");
+        return Jwts.parser().setSigningKey(another_secret).parseClaimsJws(token).getBody().getSubject();
     }
 
     public boolean validateToken(String token) {
