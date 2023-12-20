@@ -3,13 +3,13 @@ DELETE
 FROM `group_users`;
 
 INSERT INTO `group_users` (`groups_id`, `users_id`)
-VALUES (6, 1);
+VALUES (2, 3);
 INSERT INTO `group_users` (`groups_id`, `users_id`)
-VALUES (7, 1);
+VALUES (2, 1);
 INSERT INTO `group_users` (`groups_id`, `users_id`)
-VALUES (8, 2);
+VALUES (1, 3);
 INSERT INTO `group_users` (`groups_id`, `users_id`)
-VALUES (9, 3),
-       (10, 3);
+VALUES (1, 4),
+       (2, 2);
 
 SET FOREIGN_KEY_CHECKS = 1;
