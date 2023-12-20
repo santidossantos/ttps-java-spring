@@ -39,16 +39,20 @@ public class Group {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private GroupCategory category;
 
+    @Column
+    private String img;
+
     @OneToMany(mappedBy = "group")
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @Schema(hidden = true)
     private List<Expense> expenses;
 
-    public Group(String name, boolean hidden, List<User> users, GroupCategory category) {
+    public Group(String name, boolean hidden, List<User> users, GroupCategory category, String img) {
         this.name = name;
         this.hidden = hidden;
         this.users = users;
         this.category = category;
+        this.img = img;
     }
 
     public void addMember(User user) {
