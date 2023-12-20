@@ -10,6 +10,6 @@ VALUES (3, 'laura@gmail.com', 'laura', '$2a$10$x5dsLNSz7faF7CAXbKWH5eWtK9pTB6Buw
 INSERT INTO `user` (`id`, `email`, `name`, `password`, `username`)
 VALUES (4, 'jorge@gmail.com', 'jorge', '$2a$10$J.373z/XZn.X/QIsDH4pduhU.Ep0n.KuXcwCgKhLiC3atPpq/priS', 'jorge'),
        (5, 'sun@gmail.com', 'sun', '$2a$10$WdnON2s8pkCLwrxSOCvg..cUGdzmdKXm.d7O2gd337vnHavHzxUIe', 'sun'),
-       (6, 'cath@gmail.com', 'cath', '$2a$10$f/ECZbn8y6ZeQca/.k6yiuiqSJqqFmE30Fr0WOQRMFsJ4XXFROESy', 'cath');
+       (6, 'cath@gmail.com', 'unixcat', '$2a$10$f/ECZbn8y6ZeQca/.k6yiuiqSJqqFmE30Fr0WOQRMFsJ4XXFROESy', 'cath');
 
 SET FOREIGN_KEY_CHECKS=1;
