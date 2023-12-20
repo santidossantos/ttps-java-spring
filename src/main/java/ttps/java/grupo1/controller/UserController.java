@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ttps.java.grupo1.DTO.FilterDTO;
 import org.springframework.web.multipart.MultipartFile;
 import ttps.java.grupo1.DTO.FriendRequestDTO;
 import ttps.java.grupo1.DTO.UserDTO;
@@ -40,6 +41,17 @@ public class UserController implements UserApi {
     public ResponseEntity<List<User>> get() {
         List<User> userList = this.userService.findAll();
 
+        return userList.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(userList, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<List<User>> getUsersWithFilter(@RequestBody FilterDTO filterDTO){
+        Optional<User> user = this.userService.findById(filterDTO.getUserId());
+        if(user.isEmpty()) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        List<User> userList = this.userService.getUsersWithFilter(filterDTO.getFilter());
+        userList.removeAll(user.get().getFriends());
         return userList.isEmpty()
                 ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
                 : new ResponseEntity<>(userList, HttpStatus.OK);
