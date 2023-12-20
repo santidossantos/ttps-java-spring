@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import ttps.java.grupo1.DTO.AddMemberDTO;
 import ttps.java.grupo1.DTO.GroupDTO;
 import ttps.java.grupo1.model.Group;
@@ -148,4 +149,21 @@ public interface GroupApi {
     })
     ResponseEntity<Object> addMember(@Valid AddMemberDTO addMemberDTO);
 
+    @Operation(
+            summary = "Gets my groups",
+            description = "Gets groups from logged user with token provided")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    content = @Content,
+                    description = "Groups found"
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    content = @Content,
+                    description = "No content"
+            ),
+
+    })
+    public ResponseEntity<List<Group>> findMyGroups(@RequestHeader("Authorization") String token);
 }

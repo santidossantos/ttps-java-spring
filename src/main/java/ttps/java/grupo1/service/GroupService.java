@@ -7,6 +7,7 @@ import ttps.java.grupo1.model.User;
 import ttps.java.grupo1.repository.GroupRepository;
 import ttps.java.grupo1.model.Group;
 import ttps.java.grupo1.repository.UserRepository;
+import ttps.java.grupo1.security.JwtService;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +15,8 @@ import java.util.Optional;
 
 @Service
 public class GroupService {
+
+    JwtService JwtService = new JwtService();
 
     @Autowired
     GroupRepository groupRepository;
@@ -62,7 +65,7 @@ public class GroupService {
 
     @Transactional(readOnly = true)
     public List<Group> findMyGroups(String token) {
-        String userName = extractUserNameFromToken(token);
+        String userName = JwtService.getUsernameFromToken(token);
         if (userName != null) {
             Optional<User> user = userRepository.findByUsername(userName);
             if (user.isPresent()) {
@@ -70,10 +73,6 @@ public class GroupService {
             }
         }
         return Collections.emptyList();
-    }
-
-    private String extractUserNameFromToken(String token) {
-        return "santiago";
     }
 
 }
