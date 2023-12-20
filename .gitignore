@@ -317,3 +317,6 @@ buildNumber.properties
 # End of https://www.toptal.com/developers/gitignore/api/maven
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,eclipse,java,intellij
+
+# Imagenes
+/src/main/resources/static/*

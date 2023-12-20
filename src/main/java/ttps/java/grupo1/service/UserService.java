@@ -3,10 +3,10 @@ package ttps.java.grupo1.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 import ttps.java.grupo1.exception.DuplicateConstraintException;
 import ttps.java.grupo1.exception.UserNotFoundException;
 import ttps.java.grupo1.model.Group;
-import ttps.java.grupo1.repository.RoleRepository;
 import ttps.java.grupo1.repository.UserRepository;
 import ttps.java.grupo1.model.User;
 import ttps.java.grupo1.model.Expense;
@@ -22,9 +22,6 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
-
-    @Autowired
-    RoleRepository roleRepository;
 
     @Autowired
     private JwtService jwtService;
@@ -119,6 +116,15 @@ public class UserService {
                     .toList();
         }
         return filteredExpense;
+    }
+
+    @Transactional(readOnly = true)
+    public String getAvatar(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isPresent()) {
+            return user.get().getAvatar();
+        }
+        throw new NotFoundException("User not found");
     }
 
 }
