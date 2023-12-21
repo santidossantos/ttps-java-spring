@@ -149,6 +149,6 @@ public interface ExpenseApi {
                     description = "You are not authorized to make this request"
             ),
     })
-    public ResponseEntity<Object> addDebtorUser(@PathVariable("id") Long id, @Valid @RequestBody ExpenseUsersPaysDTO eupDTO);
+    public ResponseEntity<Object> addDebtorsUsers(@PathVariable("id") Long id, @Valid @RequestBody List<ExpenseUsersPaysDTO> eupDTOList);
 
 }

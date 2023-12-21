@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @Validated
@@ -105,20 +106,23 @@ public class ExpenseController implements ExpenseApi{
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/{id}/debtorUser")
-    public ResponseEntity<Object> addDebtorUser(@PathVariable("id") Long id, @Valid @RequestBody ExpenseUsersPaysDTO eupDTO){
-        ExpenseUsersPays eup = new ExpenseUsersPays(eupDTO.getAmountPayed(), eupDTO.getIsPayed(), eupDTO.getUser());
+    @PostMapping("/{id}/debtorsUsers")
+    public ResponseEntity<Object> addDebtorsUsers(@PathVariable("id") Long id, @Valid @RequestBody List<ExpenseUsersPaysDTO> eupDTOList){
+        double totalAmountPayed = eupDTOList.stream().mapToDouble(ExpenseUsersPaysDTO::getAmountPayed).sum();
         Optional<Expense> expense = expenseService.findById(id);
         Map<String, String> errorResponse = new HashMap<>();
         if (expense.isEmpty()) {
             errorResponse.put("message", "That expense doesnt exists");
-        }
-        Optional<User> user = userService.findById(eup.getUser().getId());
-        if(user.isEmpty()) {
-            errorResponse.put("message", "That user doesnt exists");
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(eupService.save(eup,id), HttpStatus.CREATED);
+        if(expense.get().getAmount() > totalAmountPayed){
+            errorResponse.put("message", "The total of all the debtors is minor of the value of the expense");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+        List<ExpenseUsersPays> expenseUsersPaysList = eupDTOList.stream()
+                .map(dto -> new ExpenseUsersPays(dto.getAmountPayed(), dto.getIsPayed(), dto.getUser()))
+                .toList();
+        return new ResponseEntity<>(eupService.saveDebtors(expenseUsersPaysList,id), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}/group")
