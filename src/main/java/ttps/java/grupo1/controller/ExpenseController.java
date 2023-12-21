@@ -117,7 +117,7 @@ public class ExpenseController implements ExpenseApi{
         }
         if(expense.get().getAmount() > totalAmountPayed){
             errorResponse.put("message", "The total of all the debtors is minor of the value of the expense");
-            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
         }
         List<ExpenseUsersPays> expenseUsersPaysList = eupDTOList.stream()
                 .map(dto -> new ExpenseUsersPays(dto.getAmountPayed(), dto.getIsPayed(), dto.getUser()))
