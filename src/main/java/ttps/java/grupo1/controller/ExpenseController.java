@@ -115,8 +115,8 @@ public class ExpenseController implements ExpenseApi{
             errorResponse.put("message", "That expense doesnt exists");
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
-        if(expense.get().getAmount() > totalAmountPayed){
-            errorResponse.put("message", "The total of all the debtors is minor of the value of the expense");
+        if(expense.get().getAmount() != totalAmountPayed){
+            errorResponse.put("message", "The total of all the debtors is minor/higher of the value of the expense");
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
         }
         List<ExpenseUsersPays> expenseUsersPaysList = eupDTOList.stream()
