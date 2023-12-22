@@ -45,10 +45,16 @@ public class GroupController implements GroupApi {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Group> get(@Valid @PathVariable("id") Long id) {
+    public ResponseEntity<Group> get(@Valid @PathVariable("id") Long id, @RequestHeader("Authorization") String token) {
         Optional<Group> optionalGroup = groupService.findById(id);
-        return optionalGroup.map(group -> new ResponseEntity<>(group, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        if (optionalGroup.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<Group> myGroups = groupService.findMyGroups(token);
+        if (!myGroups.contains(optionalGroup.get())) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity<>(optionalGroup.get(), HttpStatus.OK);
     }
 
     @PostMapping

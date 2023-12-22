@@ -21,7 +21,6 @@ import static jakarta.persistence.GenerationType.IDENTITY;
         visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = EqualAmounts.class, name = "EqualAmounts"),
-        @JsonSubTypes.Type(value = EqualAmountsPercent.class, name = "EqualAmountsPercent"),
         @JsonSubTypes.Type(value = FixedAmountsPercent.class, name = "FixedAmountsPercent"),
         @JsonSubTypes.Type(value = FixedAmounts.class, name = "FixedAmounts")
 })
