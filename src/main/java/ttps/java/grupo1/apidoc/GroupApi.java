@@ -51,8 +51,13 @@ public interface GroupApi {
                     content = @Content,
                     description = "Error: Group not found"
             ),
+            @ApiResponse(
+                    responseCode = "403",
+                    content = @Content,
+                    description = "Error: Forbidden"
+            ),
     })
-    ResponseEntity<Group> get(@Valid Long id);
+    public ResponseEntity<Group> get(@Valid @PathVariable("id") Long id, @RequestHeader("Authorization") String token);
 
     @Operation(
             summary = "Creates a group",
