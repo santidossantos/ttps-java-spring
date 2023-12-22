@@ -7,7 +7,6 @@ import ttps.java.grupo1.model.Expense;
 import ttps.java.grupo1.model.ExpenseUsersPays;
 import ttps.java.grupo1.repository.ExpenseUsersPaysRepository;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +35,18 @@ public class ExpenseUsersPaysService {
         });
         return eupList;
     }
+
+    @Transactional
+    public ExpenseUsersPays updateIsPayed(ExpenseUsersPays eupToUpdate){
+        eupToUpdate.setIsPayed(!eupToUpdate.getIsPayed());
+        return eupToUpdate;
+    }
+
+    @Transactional
+    public Optional<ExpenseUsersPays> findById(Long id){
+        return this.expenseUsersPaysRepository.findById(id);
+    }
+
 
 
 }
