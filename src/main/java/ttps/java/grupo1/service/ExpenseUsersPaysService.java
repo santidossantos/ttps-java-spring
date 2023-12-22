@@ -7,7 +7,7 @@ import ttps.java.grupo1.model.Expense;
 import ttps.java.grupo1.model.ExpenseUsersPays;
 import ttps.java.grupo1.repository.ExpenseUsersPaysRepository;
 
-import javax.swing.text.html.Option;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,6 +25,28 @@ public class ExpenseUsersPaysService {
         expense.get().getDebtorsUsers().add(eup);
         return this.expenseUsersPaysRepository.save(eup);
     }
+
+    @Transactional
+    public List<ExpenseUsersPays> saveDebtors(List<ExpenseUsersPays> eupList, Long expenseId){
+        Optional<Expense> expense = expenseService.findById(expenseId);
+        eupList.forEach(eup -> {
+            expense.get().getDebtorsUsers().add(eup);
+            this.expenseUsersPaysRepository.save(eup);
+        });
+        return eupList;
+    }
+
+    @Transactional
+    public ExpenseUsersPays updateIsPayed(ExpenseUsersPays eupToUpdate){
+        eupToUpdate.setIsPayed(!eupToUpdate.getIsPayed());
+        return eupToUpdate;
+    }
+
+    @Transactional
+    public Optional<ExpenseUsersPays> findById(Long id){
+        return this.expenseUsersPaysRepository.findById(id);
+    }
+
 
 
 }
